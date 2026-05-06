@@ -282,6 +282,59 @@
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #444; }
 
+  /* ── MODO PRIVACIDADE ──────────────────────────────────────── */
+  .privacy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 19px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    line-height: 1;
+    transition: opacity 0.2s;
+    color: var(--text2);
+  }
+  .privacy-btn:hover { opacity: 0.65; }
+
+  /* Elementos que serão borrados no modo privado */
+  .pv { transition: filter 0.3s ease; display: inline-block; }
+  body.privacy .pv,
+  body.privacy .patrimonio-value,
+  body.privacy .inv-value,
+  body.privacy .budget-value,
+  body.privacy .goal-pct,
+  body.privacy .goal-meta,
+  body.privacy .gasto-valor,
+  body.privacy .apos-result-val,
+  body.privacy canvas,
+  body.privacy td,
+  body.privacy #gastos-disponivel,
+  body.privacy #gastos-total-mes,
+  body.privacy #gastos-saldo,
+  body.privacy #gastos-pct,
+  body.privacy #comprometimento-pct,
+  body.privacy #aporte-pct-label,
+  body.privacy [id^="pct-"],
+  body.privacy [id^="falta-"],
+  body.privacy [id^="meses-"],
+  body.privacy #fin-restante,
+  body.privacy #fin-pos-moto,
+  body.privacy #bud-salario,
+  body.privacy #bud-aporte-plan,
+  body.privacy #bud-disponivel,
+  body.privacy #bud-investido-mes,
+  body.privacy #apos-result,
+  body.privacy #sim-result,
+  body.privacy #avisos-vencimentos-dash {
+    filter: blur(8px);
+    user-select: none;
+    pointer-events: none;
+    transition: filter 0.3s ease;
+  }
+  /* Garante transição suave ao revelar */
+  .patrimonio-value, .inv-value, .budget-value,
+  .goal-pct, .goal-meta, canvas, td { transition: filter 0.3s ease; }
+
   /* ── DRAG & DROP METAS ──────────────────────────────────────── */
   .draggable-goal { cursor: default; transition: border-color 0.15s, opacity 0.15s; }
   .draggable-goal.drag-over { border-color: var(--accent) !important; opacity: 0.8; }
@@ -327,6 +380,7 @@
     <span class="logo-text">Operação <em>Chave</em></span>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
+    <button class="privacy-btn" id="privacy-btn" onclick="togglePrivacy()" title="Ocultar/mostrar valores">👁️</button>
     <div id="sync-status" style="font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px">⏳ Conectando</div>
     <div class="status-badge">
       <div class="status-dot"></div>
@@ -1917,6 +1971,13 @@ function resetarDados() {
   toast('🗑️ Dados resetados');
 }
 
+// ─── PRIVACIDADE ──────────────────────────────────────────────────────────────
+function togglePrivacy() {
+  const isPrivate = document.body.classList.toggle('privacy');
+  document.getElementById('privacy-btn').textContent = isPrivate ? '🙈' : '👁️';
+  localStorage.setItem('opchave_privacy', isPrivate ? '1' : '0');
+}
+
 // ─── UTILIDADE ────────────────────────────────────────────────────────────────
 function escapeHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -2018,6 +2079,12 @@ function initFirebase() {
     renderDashboard();
     renderChart('chart-cdb-dash');
   }, 150);
+
+  // Restaurar modo privacidade
+  if (localStorage.getItem('opchave_privacy') === '1') {
+    document.body.classList.add('privacy');
+    document.getElementById('privacy-btn').textContent = '🙈';
+  }
 
   // Firebase: sincroniza em background após render inicial
   initFirebase();
