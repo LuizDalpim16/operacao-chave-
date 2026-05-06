@@ -370,9 +370,79 @@
   .apos-result-box { text-align: center; padding: 14px 12px; background: var(--bg3); border-radius: 8px; }
   .apos-result-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
   .apos-result-val { font-size: 22px; font-weight: 800; }
+
+  /* ── TELA DE LOGIN ─────────────────────────────────────────── */
+  #login-screen {
+    position: fixed; inset: 0; z-index: 2000;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .login-logo-icon { font-size: 56px; margin-bottom: 14px; }
+  .login-title { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .login-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 48px; }
+  .login-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 420px; }
+  @media (max-width: 400px) { .login-cards { grid-template-columns: 1fr; } }
+  .login-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 16px 22px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .login-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(255,107,0,0.14); }
+  .login-card:active { transform: scale(0.97); }
+  .login-card-avatar { font-size: 44px; margin-bottom: 12px; }
+  .login-card-name { font-size: 17px; font-weight: 800; }
+  .login-card-desc { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .login-card-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 4px 12px; border-radius: 20px;
+    display: inline-block; margin-top: 14px;
+  }
+  .badge-personal { background: rgba(255,107,0,0.12); color: var(--accent); border: 1px solid rgba(255,107,0,0.3); }
+  .badge-demo     { background: rgba(59,130,246,0.12); color: var(--blue);   border: 1px solid rgba(59,130,246,0.3); }
+  .login-hint { font-size: 12px; color: var(--text2); margin-top: 28px; }
+
+  /* ── INDICADOR DE USUÁRIO NO HEADER ────────────────────────── */
+  .user-chip {
+    font-size: 12px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .user-chip-personal { background: rgba(255,107,0,0.12); color: var(--accent); }
+  .user-chip-demo     { background: rgba(59,130,246,0.12); color: var(--blue); }
 </style>
 </head>
 <body>
+
+<!-- ── TELA DE LOGIN ──────────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-logo-icon">🔑</div>
+  <div class="login-title">Operação <span style="color:var(--accent)">Chave</span></div>
+  <div class="login-subtitle">Painel financeiro pessoal</div>
+
+  <div class="login-cards">
+    <div class="login-card" onclick="loginAs('Dalpim')">
+      <div class="login-card-avatar">👤</div>
+      <div class="login-card-name">Luiz Dalpim</div>
+      <div class="login-card-desc">Conta Pessoal</div>
+      <span class="login-card-badge badge-personal">🔒 Particular</span>
+    </div>
+    <div class="login-card" onclick="loginAs('Teste')">
+      <div class="login-card-avatar">🧪</div>
+      <div class="login-card-name">Usuário Teste</div>
+      <div class="login-card-desc">Conta Demonstração</div>
+      <span class="login-card-badge badge-demo">🌐 Demo</span>
+    </div>
+  </div>
+
+  <div class="login-hint">Toque em uma conta para entrar</div>
+</div>
 
 <header>
   <div class="logo">
@@ -380,8 +450,9 @@
     <span class="logo-text">Operação <em>Chave</em></span>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
+    <div id="user-chip"></div>
     <button class="privacy-btn" id="privacy-btn" onclick="togglePrivacy()" title="Ocultar/mostrar valores">👁️</button>
-    <div id="sync-status" style="font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px">⏳ Conectando</div>
+    <div id="sync-status" style="font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px">⏳</div>
     <div class="status-badge">
       <div class="status-dot"></div>
       Ativo
@@ -407,7 +478,7 @@
     <div class="patrimonio-card">
       <div class="patrimonio-label">Patrimônio Total Investido</div>
       <div class="patrimonio-value" id="pat-total">R$ 0,00</div>
-      <div class="patrimonio-sub">Luiz · <span id="pat-date">—</span></div>
+      <div class="patrimonio-sub"><span id="pat-user">—</span> · <span id="pat-date">—</span></div>
     </div>
 
     <div class="section-title"><span>💼</span> Investimentos</div>
@@ -883,8 +954,18 @@
     <hr class="divider">
     <div class="section-title"><span>⚠️</span> Dados</div>
     <div class="card">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Dados salvos localmente no browser via localStorage.</p>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Dados salvos localmente no browser via localStorage e sincronizados com Firebase.</p>
       <button class="btn btn-danger btn-sm" onclick="resetarDados()" style="width:auto">🗑️ Resetar todos os dados</button>
+    </div>
+
+    <hr class="divider">
+    <div class="section-title"><span>🚪</span> Conta</div>
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:14px;font-weight:700" id="logout-user-label">—</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">Conta ativa</div>
+      </div>
+      <button class="btn btn-sm btn-outline" onclick="logout()" style="width:auto">🚪 Sair</button>
     </div>
   </div>
 
@@ -918,35 +999,76 @@ const DEFAULTS = {
   metasOrder: [0, 1, 2, 3],
 };
 
-// ─── STORAGE ──────────────────────────────────────────────────────────────────
-function load(key) {
-  try { return JSON.parse(localStorage.getItem('opchave_' + key)); } catch { return null; }
-}
-
-// Cache em memória — inicializado do localStorage para renderização imediata
-let appData = {
-  cdb:          load('cdb')          ?? DEFAULTS.cdb,
-  ouro:         load('ouro')         ?? DEFAULTS.ouro,
-  multi:        load('multi')        ?? DEFAULTS.multi,
-  date:         load('date')         ?? DEFAULTS.date,
-  salario:      load('salario')      ?? DEFAULTS.salario,
-  aporte:       load('aporte')       ?? DEFAULTS.aporte,
-  investidoMes: load('investidoMes') ?? DEFAULTS.investidoMes,
-  historico:    load('historico')    ?? DEFAULTS.historico,
-  rules:        load('rules')        ?? DEFAULTS.rules,
-  gastos:       load('gastos')       ?? DEFAULTS.gastos,
-  contas:       load('contas')       ?? DEFAULTS.contas,
-  metasOrder:   load('metasOrder')   ?? DEFAULTS.metasOrder,
+// ─── DEFAULTS USUÁRIO TESTE ───────────────────────────────────────────────────
+const DEFAULTS_TESTE = {
+  cdb: 3200.00, ouro: 1850.00, multi: 1150.00,
+  date: '2025-04-30', salario: 4500, aporte: 800, investidoMes: 800,
+  historico: [
+    { mes: '2024-11', aporte: 600, cdb: 1800, ouro:  900, multi:  500 },
+    { mes: '2024-12', aporte: 700, cdb: 2100, ouro: 1100, multi:  650 },
+    { mes: '2025-01', aporte: 800, cdb: 2450, ouro: 1350, multi:  820 },
+    { mes: '2025-02', aporte: 800, cdb: 2750, ouro: 1550, multi:  940 },
+    { mes: '2025-03', aporte: 800, cdb: 3000, ouro: 1700, multi: 1060 },
+    { mes: '2025-04', aporte: 800, cdb: 3200, ouro: 1850, multi: 1150 },
+  ],
+  gastos: [
+    { id: 1001, descricao: 'Supermercado',  valor: 380.00, categoria: 'alimentacao', data: '2025-05-02', mes: '2025-05' },
+    { id: 1002, descricao: 'Restaurante',   valor:  95.00, categoria: 'alimentacao', data: '2025-05-03', mes: '2025-05' },
+    { id: 1003, descricao: 'Combustível',   valor: 180.00, categoria: 'transporte',  data: '2025-05-04', mes: '2025-05' },
+    { id: 1004, descricao: 'Netflix',        valor:  55.90, categoria: 'lazer',      data: '2025-05-01', mes: '2025-05' },
+    { id: 1005, descricao: 'Farmácia',      valor:  67.50, categoria: 'saude',       data: '2025-05-05', mes: '2025-05' },
+    { id: 1006, descricao: 'Curso online',  valor: 120.00, categoria: 'educacao',   data: '2025-05-06', mes: '2025-05' },
+  ],
+  contas: [
+    { id: 2001, nome: 'Internet',     valor:  99.90, dia: 10, tipo: 'fixa',     pagos: [] },
+    { id: 2002, nome: 'Energia',      valor: 210.00, dia: 12, tipo: 'variavel', pagos: [] },
+    { id: 2003, nome: 'Academia',     valor:  89.90, dia:  5, tipo: 'fixa',     pagos: ['2025-05'] },
+    { id: 2004, nome: 'Seguro carro', valor: 185.00, dia: 20, tipo: 'fixa',     pagos: [] },
+  ],
+  rules: [
+    { text: '1 cartão de crédito apenas',    checked: true },
+    { text: 'Investir todo dia 10 do mês',   checked: true },
+    { text: 'Não fazer novas dívidas',       checked: true },
+    { text: 'Montar reserva de emergência',  checked: false },
+    { text: 'Comparar preços antes de comprar', checked: true },
+    { text: 'Revisar gastos toda semana',    checked: false },
+  ],
+  metasOrder: [0, 1, 2, 3],
 };
 
-function getData() { return appData; }
+// ─── STORAGE ──────────────────────────────────────────────────────────────────
+let currentUser = null; // definido pelo login
+let appData = {};       // inicializado por initAppData() após login
+
+function load(key) {
+  if (!currentUser) return null;
+  try { return JSON.parse(localStorage.getItem(`opchave_${currentUser}_${key}`)); } catch { return null; }
+}
 
 function save(key, val) {
   appData[key] = val;
-  localStorage.setItem('opchave_' + key, JSON.stringify(val));
-  if (window._fbRef) {
-    window._fbRef.child(key).set(val).catch(e => console.warn('[Firebase write]', e));
-  }
+  if (currentUser) localStorage.setItem(`opchave_${currentUser}_${key}`, JSON.stringify(val));
+  if (window._fbRef) window._fbRef.child(key).set(val).catch(e => console.warn('[Firebase]', e));
+}
+
+function getData() { return appData; }
+
+function initAppData() {
+  const D = currentUser === 'Teste' ? DEFAULTS_TESTE : DEFAULTS;
+  appData = {
+    cdb:          load('cdb')          ?? D.cdb,
+    ouro:         load('ouro')         ?? D.ouro,
+    multi:        load('multi')        ?? D.multi,
+    date:         load('date')         ?? D.date,
+    salario:      load('salario')      ?? D.salario,
+    aporte:       load('aporte')       ?? D.aporte,
+    investidoMes: load('investidoMes') ?? D.investidoMes,
+    historico:    load('historico')    ?? D.historico,
+    rules:        load('rules')        ?? D.rules,
+    gastos:       load('gastos')       ?? D.gastos,
+    contas:       load('contas')       ?? D.contas,
+    metasOrder:   load('metasOrder')   ?? D.metasOrder,
+  };
 }
 
 // ─── FORMAT ───────────────────────────────────────────────────────────────────
@@ -1008,6 +1130,8 @@ function renderDashboard() {
 
   document.getElementById('pat-total').textContent = fmt(total);
   document.getElementById('pat-date').textContent  = fmtDate(d.date);
+  const patUser = document.getElementById('pat-user');
+  if (patUser) patUser.textContent = currentUser === 'Teste' ? 'Demo' : 'Luiz';
   document.getElementById('val-cdb').textContent   = fmt(d.cdb);
   document.getElementById('val-ouro').textContent  = fmt(d.ouro);
   document.getElementById('val-multi').textContent = fmt(d.multi);
@@ -1962,10 +2086,12 @@ function salvarConfig() {
 }
 
 function resetarDados() {
-  if (!confirm('Tem certeza? Isso apagará TODOS os dados em todos os dispositivos.')) return;
-  Object.keys(localStorage).filter(k => k.startsWith('opchave_')).forEach(k => localStorage.removeItem(k));
-  Object.assign(appData, JSON.parse(JSON.stringify(DEFAULTS)));
-  if (window._fbRef) window._fbRef.set(DEFAULTS).catch(() => {});
+  if (!confirm('Isso apagará TODOS os dados desta conta em todos os dispositivos. Confirmar?')) return;
+  const prefix   = `opchave_${currentUser}_`;
+  const defaults = currentUser === 'Teste' ? DEFAULTS_TESTE : DEFAULTS;
+  Object.keys(localStorage).filter(k => k.startsWith(prefix)).forEach(k => localStorage.removeItem(k));
+  Object.assign(appData, JSON.parse(JSON.stringify(defaults)));
+  if (window._fbRef) window._fbRef.set(defaults).catch(() => {});
   fillUpdateForm();
   renderAll();
   toast('🗑️ Dados resetados');
@@ -1989,8 +2115,6 @@ const FB_CONFIG = {
   databaseURL: 'https://projeto-app-money-default-rtdb.firebaseio.com',
   projectId:   'projeto-app-money',
 };
-const FB_USER = 'Dalpim';
-
 function setSyncStatus(icon, label, color) {
   const el = document.getElementById('sync-status');
   if (el) el.innerHTML = `<span style="color:${color}">${icon}</span> <span style="color:${color}">${label}</span>`;
@@ -2012,7 +2136,8 @@ function initFirebase() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
     const db  = firebase.database();
-    window._fbRef = db.ref(FB_USER);
+    window._fbDB  = db;
+    window._fbRef = db.ref(currentUser);
 
     // Indicador de conectividade em tempo real
     db.ref('.info/connected').on('value', snap => {
@@ -2037,7 +2162,7 @@ function initFirebase() {
       // Firebase é a fonte da verdade — atualiza memória e localStorage
       Object.assign(appData, data);
       Object.keys(data).forEach(k => {
-        localStorage.setItem('opchave_' + k, JSON.stringify(data[k]));
+        localStorage.setItem(`opchave_${currentUser}_${k}`, JSON.stringify(data[k]));
       });
 
       renderAll();
@@ -2057,8 +2182,46 @@ function initFirebase() {
   }
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-(function init() {
+// ─── LOGIN / LOGOUT ───────────────────────────────────────────────────────────
+const USER_INFO = {
+  Dalpim: { label: 'Luiz Dalpim', chipClass: 'user-chip user-chip-personal', icon: '👤' },
+  Teste:  { label: 'Usuário Teste', chipClass: 'user-chip user-chip-demo',     icon: '🧪' },
+};
+
+function migrateOldData() {
+  // Migra dados do formato antigo (opchave_KEY) para novo (opchave_Dalpim_KEY)
+  const keys = ['cdb','ouro','multi','date','salario','aporte','investidoMes','historico','rules','gastos','contas','metasOrder'];
+  let migrated = false;
+  keys.forEach(key => {
+    const oldVal = localStorage.getItem('opchave_' + key);
+    const newKey = `opchave_Dalpim_${key}`;
+    if (oldVal !== null && localStorage.getItem(newKey) === null) {
+      localStorage.setItem(newKey, oldVal);
+      migrated = true;
+    }
+  });
+  if (migrated) keys.forEach(key => localStorage.removeItem('opchave_' + key));
+}
+
+function loginAs(user) {
+  currentUser = user;
+  localStorage.setItem('opchave_session', user);
+
+  if (user === 'Dalpim') migrateOldData();
+
+  initAppData();
+
+  // Atualiza interface do header
+  const info = USER_INFO[user];
+  const chip = document.getElementById('user-chip');
+  if (chip) chip.innerHTML = `<div class="${info.chipClass}">${info.icon} ${info.label}</div>`;
+  const logoutLabel = document.getElementById('logout-user-label');
+  if (logoutLabel) logoutLabel.textContent = `${info.icon} ${info.label}`;
+
+  // Esconde login, mostra app
+  document.getElementById('login-screen').style.display = 'none';
+
+  // Setup inicial dos formulários
   const hoje = new Date().toISOString().slice(0, 10);
   document.getElementById('up-date').value = hoje;
   document.getElementById('h-mes').value   = currentYM();
@@ -2068,26 +2231,44 @@ function initFirebase() {
   document.getElementById('apos-atual').value  = d.cdb + d.ouro + d.multi;
   document.getElementById('apos-aporte').value = d.aporte;
 
-  fillUpdateForm();
-  renderDashboard();
-  renderHistorico();
-  renderRules();
-  renderGastos();
-  renderContas();
-
-  setTimeout(() => {
-    renderDashboard();
-    renderChart('chart-cdb-dash');
-  }, 150);
-
-  // Restaurar modo privacidade
+  // Modo privacidade
   if (localStorage.getItem('opchave_privacy') === '1') {
     document.body.classList.add('privacy');
     document.getElementById('privacy-btn').textContent = '🙈';
+  } else {
+    document.body.classList.remove('privacy');
+    document.getElementById('privacy-btn').textContent = '👁️';
   }
 
-  // Firebase: sincroniza em background após render inicial
+  fillUpdateForm();
+  renderAll();
+  setTimeout(() => renderChart('chart-cdb-dash'), 150);
+
+  // Firebase em background
   initFirebase();
+}
+
+function logout() {
+  if (!confirm('Sair da conta?')) return;
+  // Para listeners do Firebase
+  if (window._fbRef) { window._fbRef.off(); window._fbRef = null; }
+  if (window._fbDB)  { window._fbDB.ref('.info/connected').off(); window._fbDB = null; }
+  currentUser = null;
+  appData = {};
+  localStorage.removeItem('opchave_session');
+  setSyncStatus('⏳', '', '#888');
+  document.getElementById('user-chip').innerHTML = '';
+  // Volta para login
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+(function init() {
+  const session = localStorage.getItem('opchave_session');
+  if (session === 'Dalpim' || session === 'Teste') {
+    loginAs(session);
+  }
+  // Caso contrário a tela de login já está visível por default
 })();
 </script>
 </body>
