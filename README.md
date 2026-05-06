@@ -21,7 +21,7 @@ Conta pública com dados de exemplo para explorar todas as funcionalidades do ap
 | Campo | Valor |
 |-------|-------|
 | **Usuário** | Usuário Teste |
-| **Senha** | *(sem senha — clique direto)* |
+| **Senha** | `Teste@2025` |
 | **Salário exemplo** | R$ 4.500,00 |
 | **Aporte mensal** | R$ 800,00 |
 

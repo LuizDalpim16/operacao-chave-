@@ -72,6 +72,8 @@
   }
   .status-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
+  .shake { animation: shake 0.5s ease; }
 
   /* NAV */
   nav {
@@ -426,22 +428,36 @@
   <div class="login-title">Operação <span style="color:var(--accent)">Chave</span></div>
   <div class="login-subtitle">Painel financeiro pessoal</div>
 
-  <div class="login-cards">
-    <div class="login-card" onclick="loginAs('Dalpim')">
-      <div class="login-card-avatar">👤</div>
-      <div class="login-card-name">Luiz Dalpim</div>
-      <div class="login-card-desc">Conta Pessoal</div>
-      <span class="login-card-badge badge-personal">🔒 Particular</span>
+  <!-- Passo 1: Selecionar conta -->
+  <div id="login-step1">
+    <div class="login-cards">
+      <div class="login-card" onclick="selectUser('Dalpim')">
+        <div class="login-card-avatar">👤</div>
+        <div class="login-card-name">Luiz Dalpim</div>
+        <div class="login-card-desc">Conta Pessoal</div>
+        <span class="login-card-badge badge-personal">🔒 Particular</span>
+      </div>
+      <div class="login-card" onclick="selectUser('Teste')">
+        <div class="login-card-avatar">🧪</div>
+        <div class="login-card-name">Usuário Teste</div>
+        <div class="login-card-desc">Conta Demonstração</div>
+        <span class="login-card-badge badge-demo">🌐 Demo</span>
+      </div>
     </div>
-    <div class="login-card" onclick="loginAs('Teste')">
-      <div class="login-card-avatar">🧪</div>
-      <div class="login-card-name">Usuário Teste</div>
-      <div class="login-card-desc">Conta Demonstração</div>
-      <span class="login-card-badge badge-demo">🌐 Demo</span>
-    </div>
+    <div class="login-hint">Toque em uma conta para continuar</div>
   </div>
 
-  <div class="login-hint">Toque em uma conta para entrar</div>
+  <!-- Passo 2: Digitar senha -->
+  <div id="login-step2" style="display:none;width:100%;max-width:340px">
+    <div id="login-selected-info" style="text-align:center;margin-bottom:28px"></div>
+    <input type="password" id="login-password" class="form-input"
+           placeholder="Digite sua senha"
+           style="font-size:16px;text-align:center;letter-spacing:3px;margin-bottom:12px"
+           onkeydown="if(event.key==='Enter')doLogin()">
+    <div id="login-error" style="color:var(--red);text-align:center;font-size:13px;min-height:20px;margin-bottom:12px"></div>
+    <button class="btn" onclick="doLogin()">🔓 Entrar</button>
+    <button onclick="backToCards()" style="background:none;border:none;color:var(--text2);cursor:pointer;margin-top:16px;font-size:13px;display:block;width:100%;text-align:center">← Voltar para seleção de conta</button>
+  </div>
 </div>
 
 <header>
@@ -2188,6 +2204,57 @@ const USER_INFO = {
   Teste:  { label: 'Usuário Teste', chipClass: 'user-chip user-chip-demo',     icon: '🧪' },
 };
 
+const CREDS = {
+  Dalpim: '3d79f4db8263405d64bf448958b7304f004ada197958e33e54187cf675bc0a50',
+  Teste:  '5092766920b0cb9f3687d3e3f4bf70453ff54b83ced9dfdd5a0ab153ccd3bb8a',
+};
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+let selectedUser = null;
+
+function selectUser(user) {
+  selectedUser = user;
+  const info = USER_INFO[user];
+  document.getElementById('login-step1').style.display = 'none';
+  document.getElementById('login-step2').style.display = 'block';
+  const cls      = user === 'Dalpim' ? 'badge-personal' : 'badge-demo';
+  const badgeText = user === 'Dalpim' ? '🔒 Particular' : '🌐 Demo';
+  document.getElementById('login-selected-info').innerHTML = `
+    <div style="font-size:48px;margin-bottom:12px">${info.icon}</div>
+    <div style="font-size:20px;font-weight:800">${info.label}</div>
+    <span class="login-card-badge ${cls}" style="display:inline-block;margin-top:10px">${badgeText}</span>`;
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').textContent = '';
+  setTimeout(() => document.getElementById('login-password').focus(), 100);
+}
+
+function backToCards() {
+  document.getElementById('login-step2').style.display = 'none';
+  document.getElementById('login-step1').style.display = 'block';
+  selectedUser = null;
+}
+
+async function doLogin() {
+  const pwd = document.getElementById('login-password').value;
+  if (!pwd) { document.getElementById('login-error').textContent = '⚠️ Digite a senha'; return; }
+  const hash = await sha256(pwd);
+  if (hash === CREDS[selectedUser]) {
+    loginAs(selectedUser);
+  } else {
+    document.getElementById('login-error').textContent = '❌ Senha incorreta';
+    const inp = document.getElementById('login-password');
+    inp.value = '';
+    inp.style.borderColor = 'var(--red)';
+    inp.classList.add('shake');
+    setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+    inp.focus();
+  }
+}
+
 function migrateOldData() {
   // Migra dados do formato antigo (opchave_KEY) para novo (opchave_Dalpim_KEY)
   const keys = ['cdb','ouro','multi','date','salario','aporte','investidoMes','historico','rules','gastos','contas','metasOrder'];
@@ -2258,7 +2325,8 @@ function logout() {
   localStorage.removeItem('opchave_session');
   setSyncStatus('⏳', '', '#888');
   document.getElementById('user-chip').innerHTML = '';
-  // Volta para login
+  // Volta para login (passo 1 — seleção de conta)
+  backToCards();
   document.getElementById('login-screen').style.display = 'flex';
 }
 
