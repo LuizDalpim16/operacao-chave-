@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Operação Chave</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
   :root {
     --bg:         #0A0A0A;
@@ -24,6 +26,8 @@
     --blue:       #3b82f6;
     --yellow:     #f59e0b;
     --purple:     #a855f7;
+    --cyan:       #06b6d4;
+    --pink:       #ec4899;
     --radius:     12px;
     --shadow:     0 4px 24px rgba(0,0,0,0.6);
   }
@@ -50,12 +54,7 @@
   }
   .logo { display: flex; align-items: center; gap: 10px; }
   .logo-icon { font-size: 22px; }
-  .logo-text {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
+  .logo-text { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
   .logo-text em { color: var(--accent); font-style: normal; }
   .status-badge {
     background: rgba(34,197,94,0.12);
@@ -71,12 +70,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  .status-dot {
-    width: 6px; height: 6px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
+  .status-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
   /* NAV */
@@ -105,11 +99,7 @@
     gap: 6px;
   }
   .nav-btn:hover { color: var(--text); }
-  .nav-btn.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-    font-weight: 700;
-  }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
 
   /* MAIN */
   main { max-width: 900px; margin: 0 auto; padding: 24px 16px 80px; }
@@ -126,12 +116,7 @@
     padding: 20px;
     box-shadow: var(--shadow);
   }
-  .card-sm {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-  }
+  .card-sm { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
   @media (max-width: 600px) {
@@ -161,42 +146,15 @@
     background: radial-gradient(circle, rgba(255,107,0,0.1) 0%, transparent 70%);
     pointer-events: none;
   }
-  .patrimonio-label {
-    font-size: 11px;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 10px;
-  }
-  .patrimonio-value {
-    font-size: 42px;
-    font-weight: 800;
-    color: var(--accent);
-    letter-spacing: -1.5px;
-    line-height: 1;
-  }
+  .patrimonio-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .patrimonio-value { font-size: 42px; font-weight: 800; color: var(--accent); letter-spacing: -1.5px; line-height: 1; }
   .patrimonio-sub { font-size: 12px; color: var(--text2); margin-top: 10px; }
 
   /* INVESTMENT CARDS */
-  .inv-card {
-    border-radius: var(--radius);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .inv-card-cdb {
-    background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03));
-    border: 1px solid rgba(34,197,94,0.2);
-  }
-  .inv-card-ouro {
-    background: linear-gradient(135deg, rgba(255,107,0,0.1), rgba(255,107,0,0.04));
-    border: 1px solid rgba(255,107,0,0.25);
-  }
-  .inv-card-multi {
-    background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(168,85,247,0.03));
-    border: 1px solid rgba(168,85,247,0.2);
-  }
+  .inv-card { border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .inv-card-cdb { background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03)); border: 1px solid rgba(34,197,94,0.2); }
+  .inv-card-ouro { background: linear-gradient(135deg, rgba(255,107,0,0.1), rgba(255,107,0,0.04)); border: 1px solid rgba(255,107,0,0.25); }
+  .inv-card-multi { background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(168,85,247,0.03)); border: 1px solid rgba(168,85,247,0.2); }
   .inv-icon { font-size: 22px; }
   .inv-label { font-size: 11px; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .inv-value { font-size: 22px; font-weight: 800; }
@@ -228,46 +186,19 @@
     transition: border-color 0.2s;
   }
   .goal-card:hover { border-color: var(--border2); }
-  .goal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-  }
+  .goal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
   .goal-name { font-size: 14px; font-weight: 700; }
   .goal-pct  { font-size: 14px; font-weight: 800; }
-  .progress-track {
-    height: 8px;
-    background: var(--bg3);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 8px;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 1.1s cubic-bezier(0.4,0,0.2,1);
-    width: 0%;
-  }
+  .progress-track { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .progress-fill { height: 100%; border-radius: 4px; transition: width 1.1s cubic-bezier(0.4,0,0.2,1); width: 0%; }
   .fill-green  { background: linear-gradient(90deg, var(--green-dim), var(--green)); }
   .fill-accent { background: linear-gradient(90deg, var(--accent-dim), var(--accent)); }
   .fill-blue   { background: linear-gradient(90deg, #1d4ed8, var(--blue)); }
   .fill-yellow { background: linear-gradient(90deg, #92400e, var(--yellow)); }
-  .goal-meta {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text2);
-  }
+  .goal-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); }
 
   /* BUDGET */
-  .budget-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .budget-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); }
   .budget-row:last-child { border-bottom: none; }
   .budget-label { font-size: 14px; display: flex; align-items: center; gap: 8px; }
   .budget-value { font-size: 15px; font-weight: 700; }
@@ -278,81 +209,29 @@
   .val-yellow { color: var(--yellow); }
   .val-text2  { color: var(--text2); }
   .budget-bar-wrap { margin-top: 14px; }
-  .budget-bar-label {
-    font-size: 11px;
-    color: var(--text2);
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: space-between;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+  .budget-bar-label { font-size: 11px; color: var(--text2); margin-bottom: 5px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
   .budget-bar { height: 6px; border-radius: 3px; background: var(--bg3); overflow: hidden; margin-bottom: 8px; }
   .budget-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
   .fill-red { background: var(--red); }
 
   /* APORTE MÊS pill */
-  .aporte-pill {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-left: 6px;
-  }
+  .aporte-pill { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
   .pill-green  { background: rgba(34,197,94,0.15);  color: var(--green); }
   .pill-red    { background: rgba(239,68,68,0.15);   color: var(--red); }
   .pill-yellow { background: rgba(255,107,0,0.15);   color: var(--accent); }
 
   /* ALERTS */
-  .alert {
-    background: rgba(239,68,68,0.08);
-    border: 1px solid rgba(239,68,68,0.25);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-size: 13px;
-    color: #fca5a5;
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-  }
-  .alert-info {
-    background: rgba(59,130,246,0.08);
-    border-color: rgba(59,130,246,0.25);
-    color: #93c5fd;
-  }
-  .alert-accent {
-    background: rgba(255,107,0,0.08);
-    border-color: rgba(255,107,0,0.3);
-    color: #fdba74;
-  }
+  .alert { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start; }
+  .alert-info    { background: rgba(59,130,246,0.08);  border-color: rgba(59,130,246,0.25);  color: #93c5fd; }
+  .alert-accent  { background: rgba(255,107,0,0.08);   border-color: rgba(255,107,0,0.3);    color: #fdba74; }
+  .alert-green   { background: rgba(34,197,94,0.08);   border-color: rgba(34,197,94,0.25);   color: #86efac; }
+  .alert-yellow  { background: rgba(245,158,11,0.08);  border-color: rgba(245,158,11,0.25);  color: #fcd34d; }
 
   /* CHECKLIST */
-  .rule-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 16px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    user-select: none;
-  }
+  .rule-item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none; }
   .rule-item:hover { border-color: var(--accent); }
-  .rule-check {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    border: 2px solid var(--border2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    flex-shrink: 0;
-    transition: all 0.2s;
-    font-weight: 700;
-  }
-  .rule-item.checked   .rule-check { background: var(--green);              border-color: var(--green); color: #fff; }
+  .rule-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; transition: all 0.2s; font-weight: 700; }
+  .rule-item.checked   .rule-check { background: var(--green); border-color: var(--green); color: #fff; }
   .rule-item.unchecked .rule-check { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.35); color: var(--red); }
   .rule-text { font-size: 14px; flex: 1; }
   .rule-item.checked .rule-text { color: var(--text2); }
@@ -360,58 +239,24 @@
   /* FORM */
   .form-group { margin-bottom: 16px; }
   .form-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-  .form-input {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 15px;
-    padding: 11px 14px;
-    transition: border-color 0.2s;
-    outline: none;
-    -webkit-appearance: none;
-  }
+  .form-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; padding: 11px 14px; transition: border-color 0.2s; outline: none; -webkit-appearance: none; }
   .form-input:focus { border-color: var(--accent); }
-  .btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 12px 24px;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    letter-spacing: 0.3px;
-  }
+  select.form-input { cursor: pointer; }
+  .btn { background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; padding: 12px 24px; cursor: pointer; transition: all 0.2s; width: 100%; letter-spacing: 0.3px; }
   .btn:hover  { background: #ff8130; }
   .btn:active { transform: scale(0.98); }
   .btn-danger { background: var(--red); }
   .btn-danger:hover { background: #dc2626; }
+  .btn-green  { background: var(--green); }
+  .btn-green:hover { background: #16a34a; }
   .btn-sm { font-size: 12px; padding: 7px 14px; width: auto; border-radius: 6px; }
-  .btn-outline {
-    background: transparent;
-    border: 1px solid var(--border2);
-    color: var(--text2);
-  }
+  .btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
   .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
   /* TABLE */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th {
-    background: var(--bg3);
-    color: var(--text2);
-    font-weight: 700;
-    text-align: left;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+  th { background: var(--bg3); color: var(--text2); font-weight: 700; text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
   td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--bg3); }
@@ -422,32 +267,10 @@
   .chart-wrap { position: relative; height: 240px; }
 
   /* MOTO CARD */
-  .moto-card {
-    background: rgba(255,107,0,0.06);
-    border: 1px solid rgba(255,107,0,0.3);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-  }
+  .moto-card { background: rgba(255,107,0,0.06); border: 1px solid rgba(255,107,0,0.3); border-radius: var(--radius); padding: 16px 20px; }
 
   /* TOAST */
-  #toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--bg2);
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700;
-    z-index: 999;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-  }
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--bg2); border: 1px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 999; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* DIVIDER */
@@ -458,6 +281,42 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+  /* ── DRAG & DROP METAS ──────────────────────────────────────── */
+  .draggable-goal { cursor: default; transition: border-color 0.15s, opacity 0.15s; }
+  .draggable-goal.drag-over { border-color: var(--accent) !important; opacity: 0.8; }
+  .drag-handle { font-size: 17px; color: var(--border2); cursor: grab; padding: 2px 4px; border-radius: 4px; flex-shrink: 0; line-height: 1; }
+  .drag-handle:hover { color: var(--text2); }
+  .btn-move { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); cursor: pointer; font-size: 10px; padding: 2px 6px; line-height: 1.5; display: block; }
+  .btn-move:hover { border-color: var(--accent); color: var(--accent); }
+  .priority-badge { margin-top: 10px; font-size: 11px; color: var(--accent); font-weight: 700; background: rgba(255,107,0,0.08); border: 1px solid rgba(255,107,0,0.2); border-radius: 6px; padding: 5px 12px; display: inline-block; }
+  .priority-tag { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; background: rgba(255,107,0,0.15); color: var(--accent); white-space: nowrap; }
+
+  /* ── STATUS TAGS ────────────────────────────────────────────── */
+  .status-tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 4px; }
+  .tag-green  { background: rgba(34,197,94,0.15);  color: var(--green); }
+  .tag-red    { background: rgba(239,68,68,0.12);   color: var(--red); }
+  .tag-yellow { background: rgba(245,158,11,0.15);  color: var(--yellow); }
+  .tag-blue   { background: rgba(59,130,246,0.12);  color: var(--blue); }
+
+  /* ── CONTA CARD ─────────────────────────────────────────────── */
+  .conta-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+  .conta-urgente { border-color: rgba(239,68,68,0.45) !important; background: rgba(239,68,68,0.04) !important; }
+  .conta-proximo { border-color: rgba(245,158,11,0.35) !important; }
+
+  /* ── GASTO ITEM ─────────────────────────────────────────────── */
+  .gasto-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .gasto-item:last-child { border-bottom: none; }
+  .gasto-cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .gasto-info { flex: 1; min-width: 0; }
+  .gasto-desc { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gasto-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .gasto-valor { font-size: 15px; font-weight: 700; color: var(--red); white-space: nowrap; }
+
+  /* ── APOSENTADORIA ──────────────────────────────────────────── */
+  .apos-result-box { text-align: center; padding: 14px 12px; background: var(--bg3); border-radius: 8px; }
+  .apos-result-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .apos-result-val { font-size: 22px; font-weight: 800; }
 </style>
 </head>
 <body>
@@ -467,9 +326,12 @@
     <span class="logo-icon">🔑</span>
     <span class="logo-text">Operação <em>Chave</em></span>
   </div>
-  <div class="status-badge">
-    <div class="status-dot"></div>
-    Ativo
+  <div style="display:flex;align-items:center;gap:10px">
+    <div id="sync-status" style="font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px">⏳ Conectando</div>
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      Ativo
+    </div>
   </div>
 </header>
 
@@ -477,6 +339,8 @@
   <button class="nav-btn active" onclick="showTab('dashboard',this)">📊 Painel</button>
   <button class="nav-btn" onclick="showTab('metas',this)">🎯 Metas</button>
   <button class="nav-btn" onclick="showTab('historico',this)">📈 Histórico</button>
+  <button class="nav-btn" onclick="showTab('gastos',this)">💸 Gastos</button>
+  <button class="nav-btn" onclick="showTab('contas',this)">📅 Vencimentos</button>
   <button class="nav-btn" onclick="showTab('regras',this)">✅ Regras</button>
   <button class="nav-btn" onclick="showTab('atualizar',this)">✏️ Atualizar</button>
 </nav>
@@ -514,12 +378,9 @@
       </div>
     </div>
 
-    <!-- CDB CHART on dashboard -->
     <div class="section-title"><span>📉</span> Evolução do CDB + Projeção</div>
     <div class="card" style="margin-bottom:20px;padding:16px 16px 12px">
-      <div class="chart-wrap">
-        <canvas id="chart-cdb-dash"></canvas>
-      </div>
+      <div class="chart-wrap"><canvas id="chart-cdb-dash"></canvas></div>
     </div>
 
     <div class="section-title"><span>💰</span> Orçamento Mensal</div>
@@ -537,9 +398,7 @@
         <span class="budget-value val-red">− R$ 196,00</span>
       </div>
       <div class="budget-row">
-        <span class="budget-label">
-          📦 Aporte planejado
-        </span>
+        <span class="budget-label">📦 Aporte planejado</span>
         <span class="budget-value val-accent" id="bud-aporte-plan">− R$ 500,00</span>
       </div>
       <div class="budget-row">
@@ -558,16 +417,12 @@
           <span>Comprometimento (fixos)</span>
           <span id="comprometimento-pct">—</span>
         </div>
-        <div class="budget-bar">
-          <div class="budget-bar-fill fill-red" id="budget-bar-comprometimento" style="width:0%"></div>
-        </div>
+        <div class="budget-bar"><div class="budget-bar-fill fill-red" id="budget-bar-comprometimento" style="width:0%"></div></div>
         <div class="budget-bar-label">
           <span>Aporte / Salário</span>
           <span id="aporte-pct-label">—</span>
         </div>
-        <div class="budget-bar">
-          <div class="budget-bar-fill fill-accent" id="budget-bar-aporte" style="width:0%"></div>
-        </div>
+        <div class="budget-bar"><div class="budget-bar-fill fill-accent" id="budget-bar-aporte" style="width:0%"></div></div>
       </div>
     </div>
 
@@ -632,6 +487,7 @@
     </div>
 
     <div class="section-title"><span>⚡</span> Avisos</div>
+    <div class="gap-stack" id="avisos-vencimentos-dash" style="margin-bottom:12px"></div>
     <div class="gap-stack">
       <div class="moto-card">
         <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:6px">🏍️ Moto R15 2024 — Venda Pendente</div>
@@ -650,7 +506,10 @@
 
   <!-- METAS -->
   <div id="tab-metas" class="section">
-    <div class="section-title"><span>🎯</span> Detalhes das Metas</div>
+    <div class="section-title"><span>🎯</span> Metas por Prioridade</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px;padding:0 2px">
+      Arraste ⠿ ou use ▲▼ para reordenar. O aporte mensal é focado na meta mais prioritária.
+    </div>
     <div class="gap-stack" id="metas-detail"></div>
 
     <hr class="divider">
@@ -698,15 +557,55 @@
         <div class="alert alert-info" id="sim-result-text"></div>
       </div>
     </div>
+
+    <hr class="divider">
+    <div class="section-title"><span>🏖️</span> Simulador de Aposentadoria</div>
+    <div class="card">
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Idade atual</label>
+          <input class="form-input" id="apos-idade" type="number" value="25" min="1" max="99">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Idade de aposentadoria</label>
+          <input class="form-input" id="apos-alvo" type="number" value="55" min="1" max="99">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Patrimônio atual (R$)</label>
+          <input class="form-input" id="apos-atual" type="number" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Aporte mensal (R$)</label>
+          <input class="form-input" id="apos-aporte" type="number" placeholder="500" min="0">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Rentabilidade real anual (%)</label>
+          <input class="form-input" id="apos-retorno" type="number" value="6" step="0.1" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Renda mensal desejada (R$)</label>
+          <input class="form-input" id="apos-renda" type="number" placeholder="3000" min="0">
+        </div>
+      </div>
+      <button class="btn" onclick="calcAposentadoria()">Simular Aposentadoria</button>
+      <div id="apos-result" style="margin-top:16px;display:none"></div>
+    </div>
   </div>
 
   <!-- HISTÓRICO -->
   <div id="tab-historico" class="section">
+    <div class="section-title"><span>📊</span> Patrimônio Total — Mês a Mês</div>
+    <div class="card" style="margin-bottom:16px;padding:16px 16px 12px">
+      <div class="chart-wrap"><canvas id="chart-patrimonio"></canvas></div>
+    </div>
+
     <div class="section-title"><span>📈</span> Evolução do CDB + Projeção</div>
     <div class="card" style="margin-bottom:16px;padding:16px 16px 12px">
-      <div class="chart-wrap">
-        <canvas id="chart-cdb"></canvas>
-      </div>
+      <div class="chart-wrap"><canvas id="chart-cdb"></canvas></div>
     </div>
 
     <div class="section-title"><span>📋</span> Adicionar Registro Mensal</div>
@@ -738,14 +637,15 @@
       <button class="btn" onclick="addHistorico()">+ Adicionar Registro</button>
     </div>
 
-    <div class="section-title"><span>🗂️</span> Registros</div>
+    <div class="section-title" style="justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:8px"><span>🗂️</span> Registros</div>
+      <button class="btn btn-sm btn-outline" onclick="gerarRelatorio()">📄 Relatório PDF</button>
+    </div>
     <div class="card">
       <div class="table-wrap">
         <table>
           <thead>
-            <tr>
-              <th>Mês</th><th>Aporte</th><th>CDB</th><th>Ouro</th><th>Multi</th><th>Total</th><th></th>
-            </tr>
+            <tr><th>Mês</th><th>Aporte</th><th>CDB</th><th>Ouro</th><th>Multi</th><th>Total</th><th></th></tr>
           </thead>
           <tbody id="hist-tbody"></tbody>
         </table>
@@ -754,6 +654,121 @@
         Nenhum registro ainda. Adicione acima ↑
       </div>
     </div>
+  </div>
+
+  <!-- GASTOS -->
+  <div id="tab-gastos" class="section">
+    <div class="section-title"><span>💰</span> Resumo do Mês</div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="budget-row">
+        <span class="budget-label">💰 Disponível (após fixos e aporte)</span>
+        <span class="budget-value val-green" id="gastos-disponivel">R$ 0,00</span>
+      </div>
+      <div class="budget-row">
+        <span class="budget-label">💸 Total gasto no mês</span>
+        <span class="budget-value val-red" id="gastos-total-mes">R$ 0,00</span>
+      </div>
+      <div class="budget-row">
+        <span class="budget-label" style="font-weight:700;color:var(--text)">🟢 Saldo restante</span>
+        <span class="budget-value" id="gastos-saldo" style="font-size:18px">R$ 0,00</span>
+      </div>
+      <div class="budget-bar-wrap">
+        <div class="budget-bar-label">
+          <span>Gastos / Disponível</span>
+          <span id="gastos-pct">0%</span>
+        </div>
+        <div class="budget-bar"><div class="budget-bar-fill" id="gastos-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="section-title"><span>🥧</span> Gastos por Categoria</div>
+    <div class="card" style="margin-bottom:20px;padding:16px 16px 12px">
+      <div style="position:relative;height:200px">
+        <canvas id="chart-gastos-pie"></canvas>
+      </div>
+      <div id="gastos-pie-empty" style="display:none;text-align:center;padding:28px 0;color:var(--text2);font-size:13px">Nenhum gasto no período.</div>
+    </div>
+
+    <div class="section-title" style="justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:8px"><span>➕</span> Novo Gasto</div>
+      <select class="form-input" id="gastos-mes-filter" onchange="renderGastos()" style="width:auto;padding:5px 10px;font-size:12px"></select>
+    </div>
+    <div class="card gap-stack" style="margin-bottom:14px">
+      <div class="grid-2">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Descrição</label>
+          <input class="form-input" id="g-desc" type="text" placeholder="Ex: Almoço">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Valor (R$)</label>
+          <input class="form-input" id="g-valor" type="number" placeholder="0.00" step="0.01" min="0">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Categoria</label>
+          <select class="form-input" id="g-cat">
+            <option value="alimentacao">🍔 Alimentação</option>
+            <option value="transporte">🚗 Transporte</option>
+            <option value="lazer">🎮 Lazer</option>
+            <option value="saude">🏥 Saúde</option>
+            <option value="moradia">🏠 Moradia</option>
+            <option value="educacao">📚 Educação</option>
+            <option value="compras">🛍️ Compras</option>
+            <option value="servicos">💡 Serviços</option>
+            <option value="outros">➕ Outros</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Data</label>
+          <input class="form-input" id="g-data" type="date">
+        </div>
+      </div>
+      <button class="btn" onclick="addGasto()">+ Registrar Gasto</button>
+    </div>
+
+    <div class="section-title"><span>🗂️</span> Gastos do Período</div>
+    <div class="card">
+      <div id="gastos-list"></div>
+      <div id="gastos-empty" style="text-align:center;padding:28px;color:var(--text2);font-size:13px">
+        Nenhum gasto registrado. Adicione acima ↑
+      </div>
+    </div>
+  </div>
+
+  <!-- VENCIMENTOS -->
+  <div id="tab-contas" class="section">
+    <div class="section-title"><span>➕</span> Cadastrar Conta</div>
+    <div class="card gap-stack" style="margin-bottom:20px">
+      <div class="grid-2">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Nome da conta</label>
+          <input class="form-input" id="c-nome" type="text" placeholder="Ex: Financiamento carro">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Valor (R$)</label>
+          <input class="form-input" id="c-valor" type="number" placeholder="0.00" step="0.01" min="0">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Dia do vencimento (1–31)</label>
+          <input class="form-input" id="c-dia" type="number" min="1" max="31" placeholder="10">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Tipo</label>
+          <select class="form-input" id="c-tipo">
+            <option value="fixa">🔄 Fixa mensal</option>
+            <option value="parcelada">📦 Parcelada</option>
+            <option value="variavel">📊 Variável</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" onclick="addConta()">+ Cadastrar Conta</button>
+    </div>
+
+    <div class="section-title"><span>📅</span> Próximos Vencimentos</div>
+    <div id="contas-list" class="gap-stack"></div>
   </div>
 
   <!-- REGRAS -->
@@ -843,27 +858,41 @@ const DEFAULTS = {
     { text: 'Avaliar cancelamento do consórcio', checked: false },
     { text: 'Vender moto R15 2024', checked: false },
     { text: 'Usar venda da moto para amortizar carro', checked: false },
-  ]
+  ],
+  gastos: [],
+  contas: [],
+  metasOrder: [0, 1, 2, 3],
 };
 
 // ─── STORAGE ──────────────────────────────────────────────────────────────────
 function load(key) {
   try { return JSON.parse(localStorage.getItem('opchave_' + key)); } catch { return null; }
 }
-function save(key, val) { localStorage.setItem('opchave_' + key, JSON.stringify(val)); }
 
-function getData() {
-  return {
-    cdb:          load('cdb')          ?? DEFAULTS.cdb,
-    ouro:         load('ouro')         ?? DEFAULTS.ouro,
-    multi:        load('multi')        ?? DEFAULTS.multi,
-    date:         load('date')         ?? DEFAULTS.date,
-    salario:      load('salario')      ?? DEFAULTS.salario,
-    aporte:       load('aporte')       ?? DEFAULTS.aporte,
-    investidoMes: load('investidoMes') ?? DEFAULTS.investidoMes,
-    historico:    load('historico')    ?? DEFAULTS.historico,
-    rules:        load('rules')        ?? DEFAULTS.rules,
-  };
+// Cache em memória — inicializado do localStorage para renderização imediata
+let appData = {
+  cdb:          load('cdb')          ?? DEFAULTS.cdb,
+  ouro:         load('ouro')         ?? DEFAULTS.ouro,
+  multi:        load('multi')        ?? DEFAULTS.multi,
+  date:         load('date')         ?? DEFAULTS.date,
+  salario:      load('salario')      ?? DEFAULTS.salario,
+  aporte:       load('aporte')       ?? DEFAULTS.aporte,
+  investidoMes: load('investidoMes') ?? DEFAULTS.investidoMes,
+  historico:    load('historico')    ?? DEFAULTS.historico,
+  rules:        load('rules')        ?? DEFAULTS.rules,
+  gastos:       load('gastos')       ?? DEFAULTS.gastos,
+  contas:       load('contas')       ?? DEFAULTS.contas,
+  metasOrder:   load('metasOrder')   ?? DEFAULTS.metasOrder,
+};
+
+function getData() { return appData; }
+
+function save(key, val) {
+  appData[key] = val;
+  localStorage.setItem('opchave_' + key, JSON.stringify(val));
+  if (window._fbRef) {
+    window._fbRef.child(key).set(val).catch(e => console.warn('[Firebase write]', e));
+  }
 }
 
 // ─── FORMAT ───────────────────────────────────────────────────────────────────
@@ -896,8 +925,10 @@ function showTab(name, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
-  if (name === 'historico') renderChart('chart-cdb');
+  if (name === 'historico') { renderChart('chart-cdb'); renderComparativeChart(); }
   if (name === 'metas')     renderMetasDetail();
+  if (name === 'gastos')    renderGastos();
+  if (name === 'contas')    renderContas();
 }
 
 // ─── PROGRESS BARS ────────────────────────────────────────────────────────────
@@ -927,12 +958,10 @@ function renderDashboard() {
   document.getElementById('val-ouro').textContent  = fmt(d.ouro);
   document.getElementById('val-multi').textContent = fmt(d.multi);
 
-  // Check historico for current month to auto-fill investidoMes
   const ym = currentYM();
   const mesAtual = d.historico.find(r => r.mes === ym);
   const investido = mesAtual ? (mesAtual.aporte || 0) : d.investidoMes;
 
-  // Budget
   const fixos = 1200 + 196;
   const pctComp = ((fixos / d.salario) * 100).toFixed(1);
   const pctAporte = ((d.aporte / d.salario) * 100).toFixed(1);
@@ -946,25 +975,20 @@ function renderDashboard() {
   document.getElementById('budget-bar-comprometimento').style.width = Math.min(100, pctComp) + '%';
   document.getElementById('budget-bar-aporte').style.width          = Math.min(100, pctAporte) + '%';
 
-  // "Investido no mês" row
-  const invEl  = document.getElementById('bud-investido-mes');
-  const pill   = document.getElementById('aporte-pill');
+  const invEl = document.getElementById('bud-investido-mes');
+  const pill  = document.getElementById('aporte-pill');
   invEl.textContent = fmt(investido);
   if (investido <= 0) {
     invEl.className = 'budget-value val-text2';
-    pill.textContent = 'Pendente';
-    pill.className   = 'aporte-pill pill-red';
+    pill.textContent = 'Pendente'; pill.className = 'aporte-pill pill-red';
   } else if (investido >= d.aporte) {
     invEl.className = 'budget-value val-green';
-    pill.textContent = '✓ Feito';
-    pill.className   = 'aporte-pill pill-green';
+    pill.textContent = '✓ Feito'; pill.className = 'aporte-pill pill-green';
   } else {
     invEl.className = 'budget-value val-accent';
-    pill.textContent = 'Parcial';
-    pill.className   = 'aporte-pill pill-yellow';
+    pill.textContent = 'Parcial'; pill.className = 'aporte-pill pill-yellow';
   }
 
-  // Metas
   setBar('bar-res1',  'pct-res1',  d.cdb, 3000);
   setBar('bar-res2',  'pct-res2',  d.cdb, 5000);
   setBar('bar-casa1', 'pct-casa1', d.cdb, 10000);
@@ -981,7 +1005,32 @@ function renderDashboard() {
     document.getElementById('meses-' + id).textContent = calcMeses(faltas[i], d.aporte);
   });
 
-  // Dashboard chart
+  // Avisos de vencimentos no dashboard
+  const avisosEl = document.getElementById('avisos-vencimentos-dash');
+  if (avisosEl) {
+    const hoje = new Date();
+    const diaHoje = hoje.getDate();
+    const vencProximos = (d.contas || []).filter(c => {
+      if ((c.pagos || []).includes(ym)) return false;
+      let dias = c.dia - diaHoje;
+      if (dias < 0) dias += 30;
+      return dias <= 7;
+    });
+    if (vencProximos.length > 0) {
+      avisosEl.innerHTML = vencProximos.map(c => {
+        let dias = c.dia - diaHoje;
+        if (dias < 0) dias += 30;
+        const cls = dias <= 3 ? 'alert' : 'alert alert-yellow';
+        const msg = dias === 0 ? 'vence <strong>hoje</strong>' : `vence em <strong>${dias} dias</strong>`;
+        return `<div class="${cls}"><span>📅</span><span><strong>${c.nome}</strong> ${msg} · ${fmt(c.valor)}</span></div>`;
+      }).join('');
+      avisosEl.style.display = '';
+    } else {
+      avisosEl.innerHTML = '';
+      avisosEl.style.display = 'none';
+    }
+  }
+
   renderChart('chart-cdb-dash');
 }
 
@@ -992,25 +1041,19 @@ function renderChart(canvasId) {
   const d = getData();
   const hist = d.historico.slice().sort((a, b) => a.mes.localeCompare(b.mes));
 
-  if (chartInstances[canvasId]) {
-    chartInstances[canvasId].destroy();
-    delete chartInstances[canvasId];
-  }
+  if (chartInstances[canvasId]) { chartInstances[canvasId].destroy(); delete chartInstances[canvasId]; }
 
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
 
-  // Build real data points
   const realLabels = hist.map(r => fmtMonth(r.mes));
   const realCdb    = hist.map(r => r.cdb || 0);
 
-  // Build projection from last real point (or current CDB if no history)
   const projStart = realCdb.length > 0 ? realCdb[realCdb.length - 1] : d.cdb;
   const META_CDB  = 3000;
   const projLabels = [];
   const projValues = [];
 
-  // Projection: null-pad the real data positions, then continue
   let lastRealMes = hist.length > 0 ? hist[hist.length - 1].mes : currentYM();
   let [py, pm] = lastRealMes.split('-').map(Number);
   let projVal = projStart;
@@ -1021,31 +1064,17 @@ function renderChart(canvasId) {
     projLabels.push(label);
     projValues.push(parseFloat(projVal.toFixed(2)));
     projVal += d.aporte;
-    pm++;
-    if (pm > 12) { pm = 1; py++; }
+    pm++; if (pm > 12) { pm = 1; py++; }
   }
-  // cap last point at META_CDB
   if (projValues.length > 0 && projValues[projValues.length - 1] > META_CDB) {
     projValues[projValues.length - 1] = META_CDB;
   }
 
-  // Combined labels (real + future only if different)
   const allLabels = [...realLabels];
   projLabels.forEach(l => { if (!allLabels.includes(l)) allLabels.push(l); });
 
-  // Real dataset: values at correct positions, null elsewhere
-  const realDataset = allLabels.map(l => {
-    const i = realLabels.indexOf(l);
-    return i >= 0 ? realCdb[i] : null;
-  });
-
-  // Projection dataset: null for past, value for projected
-  const projDataset = allLabels.map(l => {
-    const i = projLabels.indexOf(l);
-    return i >= 0 ? projValues[i] : null;
-  });
-
-  // Meta R$3.000 line
+  const realDataset = allLabels.map(l => { const i = realLabels.indexOf(l); return i >= 0 ? realCdb[i] : null; });
+  const projDataset = allLabels.map(l => { const i = projLabels.indexOf(l); return i >= 0 ? projValues[i] : null; });
   const metaDataset = allLabels.map(() => META_CDB);
 
   const isEmpty = realDataset.every(v => v === null) && projDataset.every(v => v === null);
@@ -1055,132 +1084,195 @@ function renderChart(canvasId) {
     data: {
       labels: isEmpty ? ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'] : allLabels,
       datasets: isEmpty ? [] : [
-        {
-          label: 'CDB Real',
-          data: realDataset,
-          borderColor: '#22c55e',
-          backgroundColor: 'rgba(34,197,94,0.12)',
-          borderWidth: 2.5,
-          pointBackgroundColor: '#22c55e',
-          pointBorderColor: '#0A0A0A',
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          fill: true,
-          tension: 0.3,
-          spanGaps: false,
-        },
-        {
-          label: 'Projeção (+R$' + d.aporte + '/mês)',
-          data: projDataset,
-          borderColor: '#FF6B00',
-          backgroundColor: 'rgba(255,107,0,0.06)',
-          borderWidth: 2,
-          borderDash: [6, 4],
-          pointBackgroundColor: '#FF6B00',
-          pointBorderColor: '#0A0A0A',
-          pointBorderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          fill: false,
-          tension: 0.3,
-          spanGaps: false,
-        },
-        {
-          label: 'Meta R$ 3.000',
-          data: metaDataset,
-          borderColor: 'rgba(255,255,255,0.2)',
-          borderWidth: 1,
-          borderDash: [3, 6],
-          pointRadius: 0,
-          fill: false,
-        }
+        { label: 'CDB Real', data: realDataset, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.12)', borderWidth: 2.5, pointBackgroundColor: '#22c55e', pointBorderColor: '#0A0A0A', pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7, fill: true, tension: 0.3, spanGaps: false },
+        { label: 'Projeção (+R$' + d.aporte + '/mês)', data: projDataset, borderColor: '#FF6B00', backgroundColor: 'rgba(255,107,0,0.06)', borderWidth: 2, borderDash: [6,4], pointBackgroundColor: '#FF6B00', pointBorderColor: '#0A0A0A', pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 6, fill: false, tension: 0.3, spanGaps: false },
+        { label: 'Meta R$ 3.000', data: metaDataset, borderColor: 'rgba(255,255,255,0.2)', borderWidth: 1, borderDash: [3,6], pointRadius: 0, fill: false }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          align: 'start',
-          labels: {
-            color: '#888',
-            font: { size: 11, weight: '600' },
-            boxWidth: 12,
-            boxHeight: 3,
-            padding: 16,
-            usePointStyle: false,
-          }
-        },
-        tooltip: {
-          backgroundColor: '#1E1E1E',
-          borderColor: '#2A2A2A',
-          borderWidth: 1,
-          titleColor: '#F0F0F0',
-          bodyColor: '#888',
-          padding: 10,
-          callbacks: {
-            label: ctx => {
-              if (ctx.parsed.y === null) return null;
-              return ' ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y);
-            }
-          }
-        }
+        legend: { display: true, position: 'top', align: 'start', labels: { color: '#888', font: { size: 11, weight: '600' }, boxWidth: 12, boxHeight: 3, padding: 16, usePointStyle: false } },
+        tooltip: { backgroundColor: '#1E1E1E', borderColor: '#2A2A2A', borderWidth: 1, titleColor: '#F0F0F0', bodyColor: '#888', padding: 10, callbacks: { label: ctx => { if (ctx.parsed.y === null) return null; return ' ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y); } } }
       },
       scales: {
-        x: {
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: { color: '#555', font: { size: 10 }, maxTicksLimit: 8 },
-          border: { color: 'transparent' }
-        },
-        y: {
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: {
-            color: '#555',
-            font: { size: 10 },
-            callback: v => v >= 1000 ? 'R$' + (v/1000).toFixed(1) + 'k' : 'R$' + v
-          },
-          border: { color: 'transparent' },
-          beginAtZero: true,
-        }
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, maxTicksLimit: 8 }, border: { color: 'transparent' } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => v >= 1000 ? 'R$' + (v/1000).toFixed(1) + 'k' : 'R$' + v }, border: { color: 'transparent' }, beginAtZero: true }
       }
     }
   });
 }
 
-// ─── METAS DETAIL ─────────────────────────────────────────────────────────────
+// ─── GRÁFICO COMPARATIVO ──────────────────────────────────────────────────────
+function renderComparativeChart() {
+  if (chartInstances['chart-patrimonio']) { chartInstances['chart-patrimonio'].destroy(); delete chartInstances['chart-patrimonio']; }
+
+  const canvas = document.getElementById('chart-patrimonio');
+  if (!canvas) return;
+
+  const d = getData();
+  const hist = d.historico.slice().sort((a, b) => a.mes.localeCompare(b.mes));
+
+  if (hist.length === 0) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
+  chartInstances['chart-patrimonio'] = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: hist.map(r => fmtMonth(r.mes)),
+      datasets: [
+        { label: 'CDB', data: hist.map(r => r.cdb || 0), backgroundColor: 'rgba(34,197,94,0.75)', borderColor: '#22c55e', borderWidth: 1, borderRadius: 3, stack: 'total' },
+        { label: 'Ouro', data: hist.map(r => r.ouro || 0), backgroundColor: 'rgba(255,107,0,0.75)', borderColor: '#FF6B00', borderWidth: 1, borderRadius: 3, stack: 'total' },
+        { label: 'Multi', data: hist.map(r => r.multi || 0), backgroundColor: 'rgba(168,85,247,0.75)', borderColor: '#a855f7', borderWidth: 1, borderRadius: 3, stack: 'total' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', align: 'start', labels: { color: '#888', font: { size: 11, weight: '600' }, boxWidth: 12, boxHeight: 12, padding: 16 } },
+        tooltip: {
+          backgroundColor: '#1E1E1E', borderColor: '#2A2A2A', borderWidth: 1, titleColor: '#F0F0F0', bodyColor: '#888', padding: 10,
+          callbacks: {
+            label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y),
+            footer: items => 'Total: ' + fmt(items.reduce((s, i) => s + i.parsed.y, 0))
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 } }, border: { color: 'transparent' }, stacked: true },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => v >= 1000 ? 'R$' + (v/1000).toFixed(1) + 'k' : 'R$' + v }, border: { color: 'transparent' }, beginAtZero: true, stacked: true }
+      }
+    }
+  });
+}
+
+// ─── METAS COM PRIORIDADE E DRAG-DROP ────────────────────────────────────────
+let dragSrcIdx = null;
+
+const METAS_BASE = [
+  { name: '🛡️ Reserva Emergência — Meta 1', meta: 3000,  color: 'fill-green',  label: 'CDB',   key: 'cdb' },
+  { name: '🛡️ Reserva Emergência — Ideal',  meta: 5000,  color: 'fill-green',  label: 'CDB',   key: 'cdb' },
+  { name: '🏠 Meta Casa — Fase 1',           meta: 10000, color: 'fill-accent', label: 'CDB',   key: 'cdb' },
+  { name: '🏡 Meta Casa — Entrada Completa', meta: 50000, color: 'fill-yellow', label: 'Total', key: 'total' },
+];
+
 function renderMetasDetail() {
   const d = getData();
   const total = d.cdb + d.ouro + d.multi;
-  const metas = [
-    { name: '🛡️ Reserva Emergência — Meta 1', atual: d.cdb, meta: 3000,  color: 'fill-green',  label: 'CDB' },
-    { name: '🛡️ Reserva Emergência — Ideal',  atual: d.cdb, meta: 5000,  color: 'fill-green',  label: 'CDB' },
-    { name: '🏠 Meta Casa — Fase 1',           atual: d.cdb, meta: 10000, color: 'fill-accent', label: 'CDB' },
-    { name: '🏡 Meta Casa — Entrada Completa', atual: total, meta: 50000, color: 'fill-yellow', label: 'Total' },
-  ];
-  document.getElementById('metas-detail').innerHTML = metas.map(m => {
+  const order = d.metasOrder ?? [0, 1, 2, 3];
+
+  const metas = order.map(i => ({
+    ...METAS_BASE[i],
+    origIdx: i,
+    atual: METAS_BASE[i].key === 'total' ? total : d.cdb,
+  }));
+
+  const dist = calcDistribuicao(metas, d.aporte);
+
+  document.getElementById('metas-detail').innerHTML = metas.map((m, pos) => {
     const pct   = Math.min(100, (m.atual / m.meta) * 100);
     const falta = Math.max(0, m.meta - m.atual);
-    const meses = falta <= 0 ? 0 : Math.ceil(falta / d.aporte);
+    const aloc  = dist[pos];
+    const meses = falta <= 0 ? 0 : aloc > 0 ? Math.ceil(falta / aloc) : null;
+
+    const metaInfo = falta <= 0
+      ? '✅ Meta atingida!'
+      : aloc > 0
+        ? `~${meses} meses (${fmt(aloc)}/mês)`
+        : 'aguardando metas anteriores';
+
+    const priorityBadge = aloc > 0 && falta > 0 && pos === dist.findIndex((v, i) => v > 0 && Math.max(0, metas[i].meta - metas[i].atual) > 0)
+      ? `<div class="priority-badge">🎯 Foco atual · recebe ${fmt(aloc)}/mês</div>`
+      : '';
+
     return `
-      <div class="goal-card">
+      <div class="goal-card draggable-goal" draggable="true" data-pos="${pos}"
+           ondragstart="dragMetaStart(event,${pos})"
+           ondragover="dragMetaOver(event)"
+           ondragleave="dragMetaLeave(event)"
+           ondrop="dropMeta(event,${pos})">
         <div class="goal-header">
-          <div>
-            <div class="goal-name">${m.name}</div>
-            <div style="font-size:11px;color:var(--text2);margin-top:3px">${m.label}: ${fmt(m.atual)} / ${fmt(m.meta)}</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;flex:1">
+            <span class="drag-handle" title="Arraste para reordenar">⠿</span>
+            <div>
+              <div class="goal-name">${m.name}</div>
+              <div style="font-size:11px;color:var(--text2);margin-top:3px">${m.label}: ${fmt(m.atual)} / ${fmt(m.meta)}</div>
+            </div>
           </div>
-          <div class="goal-pct" style="color:var(--accent)">${pct.toFixed(1)}%</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="display:flex;flex-direction:column;gap:3px">
+              ${pos > 0 ? `<button class="btn-move" onclick="moveMeta(${pos},-1)">▲</button>` : '<span style="display:block;height:20px"></span>'}
+              ${pos < metas.length-1 ? `<button class="btn-move" onclick="moveMeta(${pos},1)">▼</button>` : '<span style="display:block;height:20px"></span>'}
+            </div>
+            <div class="goal-pct" style="color:var(--accent)">${pct.toFixed(1)}%</div>
+          </div>
         </div>
         <div class="progress-track"><div class="progress-fill ${m.color}" style="width:${pct.toFixed(1)}%"></div></div>
         <div class="goal-meta">
           <span>${falta <= 0 ? '✅ Meta atingida!' : 'Falta ' + fmt(falta)}</span>
-          <span>${falta <= 0 ? '' : '~' + meses + ' meses (aporte ' + fmt(d.aporte) + '/mês)'}</span>
+          <span>${metaInfo}</span>
         </div>
+        ${priorityBadge}
       </div>`;
   }).join('');
+}
+
+function calcDistribuicao(metas, aporteTotal) {
+  let restante = aporteTotal;
+  return metas.map(m => {
+    const falta = Math.max(0, m.meta - m.atual);
+    if (falta <= 0 || restante <= 0) return 0;
+    const aloc = restante;
+    restante = 0;
+    return aloc;
+  });
+}
+
+function dragMetaStart(e, pos) {
+  dragSrcIdx = pos;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => e.target.style.opacity = '0.5', 0);
+}
+
+function dragMetaOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+
+function dragMetaLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function dropMeta(e, pos) {
+  e.preventDefault();
+  document.querySelectorAll('.draggable-goal').forEach(el => {
+    el.classList.remove('drag-over');
+    el.style.opacity = '';
+  });
+  if (dragSrcIdx === null || dragSrcIdx === pos) { dragSrcIdx = null; return; }
+  const d = getData();
+  const order = [...(d.metasOrder ?? [0,1,2,3])];
+  const [moved] = order.splice(dragSrcIdx, 1);
+  order.splice(pos, 0, moved);
+  save('metasOrder', order);
+  dragSrcIdx = null;
+  renderMetasDetail();
+}
+
+function moveMeta(pos, dir) {
+  const d = getData();
+  const order = [...(d.metasOrder ?? [0,1,2,3])];
+  const newPos = pos + dir;
+  if (newPos < 0 || newPos >= order.length) return;
+  [order[pos], order[newPos]] = [order[newPos], order[pos]];
+  save('metasOrder', order);
+  renderMetasDetail();
 }
 
 // ─── CALC FIN ─────────────────────────────────────────────────────────────────
@@ -1211,6 +1303,79 @@ function simular() {
     tempo += mesesR + ' mês' + (mesesR !== 1 ? 'es' : '');
     txt.textContent = `Com ${fmt(aporte)}/mês você atinge ${fmt(meta)} em ${meses} meses (${tempo}). Faltam ${fmt(falta)}.`;
   }
+}
+
+// ─── APOSENTADORIA ────────────────────────────────────────────────────────────
+function calcAposentadoria() {
+  const idadeAtual  = parseInt(document.getElementById('apos-idade').value)   || 25;
+  const idadeAlvo   = parseInt(document.getElementById('apos-alvo').value)    || 55;
+  const patrimonioAt = parseFloat(document.getElementById('apos-atual').value)  || 0;
+  const aporteM     = parseFloat(document.getElementById('apos-aporte').value) || 500;
+  const retornoAno  = parseFloat(document.getElementById('apos-retorno').value) || 6;
+  const rendaMensal = parseFloat(document.getElementById('apos-renda').value)  || 3000;
+
+  const anos  = idadeAlvo - idadeAtual;
+  if (anos <= 0) { toast('⚠️ Aposentadoria deve ser após a idade atual'); return; }
+
+  const meses = anos * 12;
+  const rm    = Math.pow(1 + retornoAno / 100, 1 / 12) - 1;
+
+  // Valor futuro com aportes mensais: FV = PV*(1+r)^n + PMT*((1+r)^n - 1)/r
+  const fator = Math.pow(1 + rm, meses);
+  const patrimonioFinal = rm > 0
+    ? patrimonioAt * fator + aporteM * (fator - 1) / rm
+    : patrimonioAt + aporteM * meses;
+
+  // Meta pelo regra dos 4% (25x a renda anual)
+  const patrimonioNecessario = rendaMensal * 12 / 0.04;
+
+  // Renda possível com o patrimônio projetado
+  const rendaPossivel = (patrimonioFinal * 0.04) / 12;
+
+  // Meses para atingir meta de patrimônio
+  let mesesParaMeta = 0;
+  if (patrimonioAt < patrimonioNecessario) {
+    for (let i = 1; i <= 1200; i++) {
+      const f = rm > 0 ? Math.pow(1 + rm, i) : 1;
+      const fv = rm > 0
+        ? patrimonioAt * f + aporteM * (f - 1) / rm
+        : patrimonioAt + aporteM * i;
+      if (fv >= patrimonioNecessario) { mesesParaMeta = i; break; }
+    }
+  }
+
+  const idadeMeta = mesesParaMeta > 0 ? idadeAtual + Math.floor(mesesParaMeta / 12) : idadeAtual;
+  const atingeMeta = patrimonioFinal >= patrimonioNecessario;
+  const anosParaMeta = Math.floor(mesesParaMeta / 12);
+  const mesesRestMeta = mesesParaMeta % 12;
+
+  const resultEl = document.getElementById('apos-result');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = `
+    <div class="grid-2" style="margin-bottom:12px">
+      <div class="apos-result-box">
+        <div class="apos-result-label">Patrimônio aos ${idadeAlvo} anos</div>
+        <div class="apos-result-val val-accent">${fmt(patrimonioFinal)}</div>
+      </div>
+      <div class="apos-result-box">
+        <div class="apos-result-label">Renda mensal possível (4%)</div>
+        <div class="apos-result-val val-green">${fmt(rendaPossivel)}</div>
+      </div>
+    </div>
+    <div class="apos-result-box" style="margin-bottom:12px">
+      <div class="apos-result-label">Meta de patrimônio para ${fmt(rendaMensal)}/mês</div>
+      <div style="font-size:17px;font-weight:800;margin-top:4px">${fmt(patrimonioNecessario)}</div>
+      <div style="margin-top:8px">
+        ${atingeMeta
+          ? `<span style="color:var(--green);font-weight:700">✅ Você atinge a meta antes dos ${idadeAlvo} anos!</span>`
+          : `<span style="color:var(--yellow);font-weight:700">⏰ Meta atingida aos ${idadeMeta} anos (${anosParaMeta > 0 ? anosParaMeta + 'a ' : ''}${mesesRestMeta}m)</span>`
+        }
+      </div>
+    </div>
+    <div class="alert alert-info">
+      <span>💡</span>
+      <span>Com ${fmt(aporteM)}/mês e ${retornoAno}% a.a. real, você acumulará <strong>${fmt(patrimonioFinal)}</strong> aos ${idadeAlvo} anos — gerando uma renda de <strong>${fmt(rendaPossivel)}/mês</strong> pela regra dos 4%.</span>
+    </div>`;
 }
 
 // ─── HISTORICO ────────────────────────────────────────────────────────────────
@@ -1256,6 +1421,7 @@ function addHistorico() {
 
   renderHistorico();
   renderChart('chart-cdb');
+  renderComparativeChart();
   renderDashboard();
   toast('✓ Registro adicionado!');
 }
@@ -1267,6 +1433,410 @@ function deleteHistorico(mes) {
   save('historico', d.historico);
   renderHistorico();
   renderChart('chart-cdb');
+  renderComparativeChart();
+  renderDashboard();
+}
+
+// ─── RELATÓRIO PDF ────────────────────────────────────────────────────────────
+function gerarRelatorio() {
+  const d = getData();
+  const total = d.cdb + d.ouro + d.multi;
+  const hist  = d.historico.slice().sort((a, b) => b.mes.localeCompare(a.mes));
+  const mesAtual = currentYM();
+  const gastosMes = (d.gastos || []).filter(g => g.mes === mesAtual);
+  const totalGasto = gastosMes.reduce((s, g) => s + g.valor, 0);
+  const contasPend = (d.contas || []).filter(c => !(c.pagos || []).includes(mesAtual));
+
+  const METAS_PDF = [
+    { name: 'Reserva Emergência (Meta 1)', atual: d.cdb, meta: 3000 },
+    { name: 'Reserva Emergência (Ideal)',  atual: d.cdb, meta: 5000 },
+    { name: 'Meta Casa (Fase 1)',          atual: d.cdb, meta: 10000 },
+    { name: 'Meta Casa (Entrada Completa)', atual: total, meta: 50000 },
+  ];
+
+  const CAT_NAMES = {
+    alimentacao:'Alimentação', transporte:'Transporte', lazer:'Lazer',
+    saude:'Saúde', moradia:'Moradia', educacao:'Educação',
+    compras:'Compras', servicos:'Serviços', outros:'Outros',
+  };
+
+  const w = window.open('', '_blank', 'width=820,height=920');
+  if (!w) { toast('⚠️ Habilite popups para gerar o relatório'); return; }
+
+  w.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Operação Chave — Relatório ${fmtMonth(mesAtual)}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;color:#1a1a1a;padding:40px;max-width:760px;margin:0 auto}
+  h1{font-size:26px;font-weight:800;margin-bottom:4px}
+  .sub{color:#666;font-size:13px;margin-bottom:30px}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:#999;margin:24px 0 10px;border-bottom:1px solid #eee;padding-bottom:6px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .box{background:#f8f8f8;border:1px solid #e8e8e8;border-radius:8px;padding:13px 15px}
+  .box-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .box-val{font-size:20px;font-weight:800}
+  .green{color:#16a34a}.orange{color:#ea580c}.purple{color:#7c3aed}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+  th{background:#f4f4f4;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border-bottom:2px solid #e8e8e8;text-align:left;color:#666}
+  td{padding:9px 10px;border-bottom:1px solid #f0f0f0;color:#1a1a1a}
+  .pbar{background:#eee;border-radius:3px;height:6px;margin-top:4px}
+  .pfill{height:100%;border-radius:3px;background:#ea580c}
+  .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+  .badge-red{background:#fee2e2;color:#dc2626}
+  .badge-green{background:#dcfce7;color:#16a34a}
+  .footer{margin-top:32px;padding-top:16px;border-top:1px solid #eee;text-align:center;color:#bbb;font-size:11px}
+  @media print{button{display:none!important}}
+</style>
+</head>
+<body>
+<h1>🔑 Operação Chave</h1>
+<div class="sub">Relatório Mensal — ${fmtMonth(mesAtual)} &nbsp;·&nbsp; Gerado em ${new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'})}</div>
+
+<h2>💼 Investimentos</h2>
+<div class="grid">
+  <div class="box"><div class="box-label">CDB 100% CDI</div><div class="box-val green">${fmt(d.cdb)}</div></div>
+  <div class="box"><div class="box-label">Fundo Ouro</div><div class="box-val orange">${fmt(d.ouro)}</div></div>
+  <div class="box"><div class="box-label">Multimercado</div><div class="box-val purple">${fmt(d.multi)}</div></div>
+  <div class="box"><div class="box-label">Patrimônio Total</div><div class="box-val">${fmt(total)}</div></div>
+</div>
+
+<h2>🎯 Progresso das Metas</h2>
+<table>
+<thead><tr><th>Meta</th><th>Atual</th><th>Alvo</th><th>Progresso</th></tr></thead>
+<tbody>
+${METAS_PDF.map(m => {
+  const pct = Math.min(100, (m.atual / m.meta) * 100).toFixed(1);
+  return `<tr>
+    <td>${m.name}</td>
+    <td>${fmt(m.atual)}</td>
+    <td>${fmt(m.meta)}</td>
+    <td style="width:120px">${pct}%<div class="pbar"><div class="pfill" style="width:${pct}%"></div></div></td>
+  </tr>`;
+}).join('')}
+</tbody>
+</table>
+
+${hist.length > 0 ? `
+<h2>📈 Histórico Recente (últimos 6 meses)</h2>
+<table>
+<thead><tr><th>Mês</th><th>Aporte</th><th>CDB</th><th>Ouro</th><th>Multi</th><th>Total</th></tr></thead>
+<tbody>
+${hist.slice(0,6).map(r => {
+  const t = (r.cdb||0)+(r.ouro||0)+(r.multi||0);
+  return `<tr><td>${fmtMonth(r.mes)}</td><td>${fmt(r.aporte||0)}</td><td>${fmt(r.cdb||0)}</td><td>${fmt(r.ouro||0)}</td><td>${fmt(r.multi||0)}</td><td><strong>${fmt(t)}</strong></td></tr>`;
+}).join('')}
+</tbody>
+</table>` : ''}
+
+${gastosMes.length > 0 ? `
+<h2>💸 Gastos de ${fmtMonth(mesAtual)}</h2>
+<table>
+<thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Valor</th></tr></thead>
+<tbody>
+${gastosMes.slice().sort((a,b)=>b.data.localeCompare(a.data)).map(g =>
+  `<tr><td>${g.descricao}</td><td>${CAT_NAMES[g.categoria]||'Outros'}</td><td>${fmtDate(g.data)}</td><td>${fmt(g.valor)}</td></tr>`
+).join('')}
+<tr style="font-weight:700;background:#f8f8f8"><td colspan="3">Total de gastos</td><td>${fmt(totalGasto)}</td></tr>
+</tbody>
+</table>` : ''}
+
+${contasPend.length > 0 ? `
+<h2>📅 Contas Pendentes — ${fmtMonth(mesAtual)}</h2>
+<table>
+<thead><tr><th>Conta</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr></thead>
+<tbody>
+${contasPend.map(c =>
+  `<tr><td>${c.nome}</td><td>Dia ${c.dia}</td><td>${fmt(c.valor)}</td><td><span class="badge badge-red">Pendente</span></td></tr>`
+).join('')}
+</tbody>
+</table>` : ''}
+
+<div class="footer">Operação Chave · Relatório gerado automaticamente</div>
+<script>window.onload=()=>setTimeout(()=>window.print(),400);<\/script>
+</body>
+</html>`);
+  w.document.close();
+}
+
+// ─── CATEGORIAS DE GASTOS ─────────────────────────────────────────────────────
+const CATEGORIAS = {
+  alimentacao: { label: '🍔 Alimentação', color: '#f59e0b' },
+  transporte:  { label: '🚗 Transporte',  color: '#3b82f6' },
+  lazer:       { label: '🎮 Lazer',       color: '#a855f7' },
+  saude:       { label: '🏥 Saúde',       color: '#22c55e' },
+  moradia:     { label: '🏠 Moradia',     color: '#ef4444' },
+  educacao:    { label: '📚 Educação',    color: '#06b6d4' },
+  compras:     { label: '🛍️ Compras',    color: '#ec4899' },
+  servicos:    { label: '💡 Serviços',    color: '#f97316' },
+  outros:      { label: '➕ Outros',      color: '#6b7280' },
+};
+
+// ─── GASTOS ───────────────────────────────────────────────────────────────────
+function renderGastos() {
+  const d = getData();
+  const filterEl = document.getElementById('gastos-mes-filter');
+
+  const mesSet = new Set((d.gastos || []).map(g => g.mes));
+  mesSet.add(currentYM());
+  const meses = [...mesSet].sort().reverse();
+
+  const prevSel = filterEl?.value;
+  const selMes  = (prevSel && mesSet.has(prevSel)) ? prevSel : currentYM();
+
+  if (filterEl) {
+    filterEl.innerHTML = meses.map(m =>
+      `<option value="${m}"${m === selMes ? ' selected' : ''}>${fmtMonth(m)}</option>`
+    ).join('');
+  }
+
+  const mesFilter  = filterEl?.value || selMes;
+  const gastosMes  = (d.gastos || []).filter(g => g.mes === mesFilter);
+  const totalGasto = gastosMes.reduce((s, g) => s + g.valor, 0);
+
+  const fixos     = 1200 + 196;
+  const disponivel = d.salario - fixos - d.aporte;
+  const saldo      = disponivel - totalGasto;
+  const pctGasto   = disponivel > 0 ? Math.min(100, (totalGasto / disponivel) * 100) : 0;
+
+  document.getElementById('gastos-disponivel').textContent = fmt(disponivel);
+  document.getElementById('gastos-total-mes').textContent  = fmt(totalGasto);
+
+  const saldoEl = document.getElementById('gastos-saldo');
+  saldoEl.textContent = fmt(Math.abs(saldo)) + (saldo < 0 ? ' (ultrapassado!)' : '');
+  saldoEl.className   = 'budget-value ' + (saldo >= 0 ? 'val-green' : 'val-red') + ' budget-value';
+  saldoEl.style.fontSize = '18px';
+
+  const barEl = document.getElementById('gastos-bar');
+  barEl.style.width = pctGasto + '%';
+  barEl.className = 'budget-bar-fill ' + (pctGasto > 90 ? 'fill-red' : pctGasto > 70 ? 'fill-accent' : 'fill-green');
+  document.getElementById('gastos-pct').textContent = pctGasto.toFixed(1) + '%';
+
+  // Pie chart
+  renderGastosChart(gastosMes);
+
+  // List
+  const listEl  = document.getElementById('gastos-list');
+  const emptyEl = document.getElementById('gastos-empty');
+
+  if (gastosMes.length === 0) {
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  const sorted = gastosMes.slice().sort((a, b) => b.data.localeCompare(a.data));
+  listEl.innerHTML = sorted.map(g => {
+    const cat = CATEGORIAS[g.categoria] || CATEGORIAS.outros;
+    return `
+      <div class="gasto-item">
+        <div class="gasto-cat-dot" style="background:${cat.color}"></div>
+        <div class="gasto-info">
+          <div class="gasto-desc">${escapeHtml(g.descricao)}</div>
+          <div class="gasto-meta">${cat.label} · ${fmtDate(g.data)}</div>
+        </div>
+        <div class="gasto-valor">${fmt(g.valor)}</div>
+        <button class="btn btn-sm btn-danger" onclick="deleteGasto(${g.id})" style="width:auto;padding:5px 10px;flex-shrink:0">✕</button>
+      </div>`;
+  }).join('');
+}
+
+function renderGastosChart(gastosMes) {
+  if (chartInstances['chart-gastos-pie']) {
+    chartInstances['chart-gastos-pie'].destroy();
+    delete chartInstances['chart-gastos-pie'];
+  }
+
+  const canvas  = document.getElementById('chart-gastos-pie');
+  const emptyEl = document.getElementById('gastos-pie-empty');
+  if (!canvas) return;
+
+  const byCategory = {};
+  gastosMes.forEach(g => { byCategory[g.categoria] = (byCategory[g.categoria] || 0) + g.valor; });
+  const cats = Object.keys(byCategory);
+
+  if (cats.length === 0) {
+    canvas.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+  canvas.style.display = '';
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  const labels = cats.map(c => (CATEGORIAS[c] || CATEGORIAS.outros).label);
+  const values = cats.map(c => byCategory[c]);
+  const colors = cats.map(c => (CATEGORIAS[c] || CATEGORIAS.outros).color);
+
+  chartInstances['chart-gastos-pie'] = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors.map(c => c + 'CC'),
+        borderColor: '#141414',
+        borderWidth: 2,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { color: '#888', font: { size: 11 }, padding: 10, boxWidth: 12 } },
+        tooltip: {
+          backgroundColor: '#1E1E1E', borderColor: '#2A2A2A', borderWidth: 1, titleColor: '#F0F0F0', bodyColor: '#888',
+          callbacks: {
+            label: ctx => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              return ' ' + fmt(ctx.parsed) + ' (' + ((ctx.parsed / total) * 100).toFixed(1) + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function addGasto() {
+  const desc  = document.getElementById('g-desc').value.trim();
+  const valor = parseFloat(document.getElementById('g-valor').value);
+  const cat   = document.getElementById('g-cat').value;
+  const data  = document.getElementById('g-data').value;
+
+  if (!desc)                    { toast('⚠️ Informe a descrição'); return; }
+  if (isNaN(valor) || valor <= 0) { toast('⚠️ Informe o valor'); return; }
+  if (!data)                    { toast('⚠️ Informe a data'); return; }
+
+  const d = getData();
+  d.gastos.push({ id: Date.now(), descricao: desc, valor, categoria: cat, data, mes: data.slice(0, 7) });
+  save('gastos', d.gastos);
+
+  document.getElementById('g-desc').value  = '';
+  document.getElementById('g-valor').value = '';
+  renderGastos();
+  toast('✓ Gasto registrado!');
+}
+
+function deleteGasto(id) {
+  if (!confirm('Remover este gasto?')) return;
+  const d = getData();
+  d.gastos = d.gastos.filter(g => g.id !== id);
+  save('gastos', d.gastos);
+  renderGastos();
+}
+
+// ─── CONTAS / VENCIMENTOS ─────────────────────────────────────────────────────
+function renderContas() {
+  const d      = getData();
+  const contas = d.contas || [];
+  const listEl = document.getElementById('contas-list');
+
+  if (contas.length === 0) {
+    listEl.innerHTML = `<div style="text-align:center;padding:28px;color:var(--text2);font-size:13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)">Nenhuma conta cadastrada. Adicione acima ↑</div>`;
+    return;
+  }
+
+  const hoje    = new Date();
+  const diaHoje = hoje.getDate();
+  const mesAtual = currentYM();
+
+  const sorted = contas.map(c => {
+    let dias = c.dia - diaHoje;
+    if (dias < 0) dias += 30;
+    return { ...c, diasAte: dias };
+  }).sort((a, b) => a.diasAte - b.diasAte);
+
+  const TIPO_LABEL = { fixa: '🔄 Fixa', parcelada: '📦 Parcelada', variavel: '📊 Variável' };
+
+  listEl.innerHTML = sorted.map(c => {
+    const pago = (c.pagos || []).includes(mesAtual);
+    let badge = '';
+    let extraClass = '';
+
+    if (pago) {
+      badge = `<span class="status-tag tag-green">✓ Pago</span>`;
+    } else if (c.diasAte === 0) {
+      badge = `<span class="status-tag tag-red">⚠️ Hoje!</span>`;
+      extraClass = 'conta-urgente';
+    } else if (c.diasAte <= 3) {
+      badge = `<span class="status-tag tag-red">⚠️ ${c.diasAte}d</span>`;
+      extraClass = 'conta-urgente';
+    } else if (c.diasAte <= 7) {
+      badge = `<span class="status-tag tag-yellow">⏰ ${c.diasAte} dias</span>`;
+      extraClass = 'conta-proximo';
+    } else {
+      badge = `<span class="status-tag tag-blue">📅 ${c.diasAte} dias</span>`;
+    }
+
+    return `
+      <div class="conta-card ${extraClass}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div>
+            <div style="font-weight:700;font-size:15px">${escapeHtml(c.nome)}</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:3px">${TIPO_LABEL[c.tipo] || '🔄 Fixa'} · Vence todo dia <strong>${c.dia}</strong></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:800;font-size:17px;color:var(--accent)">${fmt(c.valor)}</div>
+            ${badge}
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm ${pago ? 'btn-outline' : 'btn-green'}" onclick="togglePago(${c.id})" style="flex:1">
+            ${pago ? '↩ Marcar como Pendente' : '✓ Marcar como Pago'}
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteConta(${c.id})" style="width:auto;padding:7px 12px">✕</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function addConta() {
+  const nome  = document.getElementById('c-nome').value.trim();
+  const valor = parseFloat(document.getElementById('c-valor').value);
+  const dia   = parseInt(document.getElementById('c-dia').value);
+  const tipo  = document.getElementById('c-tipo').value;
+
+  if (!nome)                    { toast('⚠️ Informe o nome da conta'); return; }
+  if (isNaN(valor) || valor <= 0) { toast('⚠️ Informe o valor'); return; }
+  if (isNaN(dia) || dia < 1 || dia > 31) { toast('⚠️ Dia deve ser entre 1 e 31'); return; }
+
+  const d = getData();
+  d.contas.push({ id: Date.now(), nome, valor, dia, tipo, pagos: [] });
+  save('contas', d.contas);
+
+  document.getElementById('c-nome').value  = '';
+  document.getElementById('c-valor').value = '';
+  document.getElementById('c-dia').value   = '';
+  renderContas();
+  renderDashboard();
+  toast('✓ Conta cadastrada!');
+}
+
+function deleteConta(id) {
+  if (!confirm('Remover esta conta?')) return;
+  const d = getData();
+  d.contas = d.contas.filter(c => c.id !== id);
+  save('contas', d.contas);
+  renderContas();
+  renderDashboard();
+}
+
+function togglePago(id) {
+  const d   = getData();
+  const mes = currentYM();
+  const conta = d.contas.find(c => c.id === id);
+  if (!conta) return;
+  conta.pagos = conta.pagos || [];
+  if (conta.pagos.includes(mes)) {
+    conta.pagos = conta.pagos.filter(m => m !== mes);
+  } else {
+    conta.pagos.push(mes);
+  }
+  save('contas', d.contas);
+  renderContas();
   renderDashboard();
 }
 
@@ -1312,17 +1882,15 @@ function fillUpdateForm() {
 }
 
 function salvarValores() {
-  const cdb   = parseFloat(document.getElementById('up-cdb').value);
-  const ouro  = parseFloat(document.getElementById('up-ouro').value);
+  const cdb  = parseFloat(document.getElementById('up-cdb').value);
+  const ouro = parseFloat(document.getElementById('up-ouro').value);
   const multi = parseFloat(document.getElementById('up-multi').value);
   const invM  = parseFloat(document.getElementById('up-investido-mes').value) || 0;
   const date  = document.getElementById('up-date').value;
 
   if (isNaN(cdb) || isNaN(ouro) || isNaN(multi)) { toast('⚠️ Preencha CDB, Ouro e Multi'); return; }
 
-  save('cdb', cdb);
-  save('ouro', ouro);
-  save('multi', multi);
+  save('cdb', cdb); save('ouro', ouro); save('multi', multi);
   save('investidoMes', invM);
   if (date) save('date', date);
 
@@ -1340,29 +1908,119 @@ function salvarConfig() {
 }
 
 function resetarDados() {
-  if (!confirm('Tem certeza? Isso apagará TODOS os dados.')) return;
+  if (!confirm('Tem certeza? Isso apagará TODOS os dados em todos os dispositivos.')) return;
   Object.keys(localStorage).filter(k => k.startsWith('opchave_')).forEach(k => localStorage.removeItem(k));
+  Object.assign(appData, JSON.parse(JSON.stringify(DEFAULTS)));
+  if (window._fbRef) window._fbRef.set(DEFAULTS).catch(() => {});
   fillUpdateForm();
+  renderAll();
+  toast('🗑️ Dados resetados');
+}
+
+// ─── UTILIDADE ────────────────────────────────────────────────────────────────
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── FIREBASE ─────────────────────────────────────────────────────────────────
+const FB_CONFIG = {
+  apiKey:      'AIzaSyBQmwmzr-MFR9f-A6BHjGtl2o4vQbcS_hg',
+  databaseURL: 'https://projeto-app-money-default-rtdb.firebaseio.com',
+  projectId:   'projeto-app-money',
+};
+const FB_USER = 'Dalpim';
+
+function setSyncStatus(icon, label, color) {
+  const el = document.getElementById('sync-status');
+  if (el) el.innerHTML = `<span style="color:${color}">${icon}</span> <span style="color:${color}">${label}</span>`;
+}
+
+function renderAll() {
   renderDashboard();
   renderHistorico();
   renderRules();
-  toast('🗑️ Dados resetados');
+  renderGastos();
+  renderContas();
+  if (document.getElementById('tab-historico').classList.contains('active')) {
+    renderChart('chart-cdb'); renderComparativeChart();
+  }
+  if (document.getElementById('tab-metas').classList.contains('active')) renderMetasDetail();
+}
+
+function initFirebase() {
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    const db  = firebase.database();
+    window._fbRef = db.ref(FB_USER);
+
+    // Indicador de conectividade em tempo real
+    db.ref('.info/connected').on('value', snap => {
+      if (snap.val()) {
+        setSyncStatus('☁️', 'Conectado', '#22c55e');
+      } else {
+        setSyncStatus('📴', 'Offline', '#f59e0b');
+      }
+    });
+
+    let firstLoad = true;
+    window._fbRef.on('value', snapshot => {
+      const data = snapshot.val();
+
+      if (!data) {
+        // Primeira vez: envia dados locais para o Firebase
+        window._fbRef.set(appData);
+        firstLoad = false;
+        return;
+      }
+
+      // Firebase é a fonte da verdade — atualiza memória e localStorage
+      Object.assign(appData, data);
+      Object.keys(data).forEach(k => {
+        localStorage.setItem('opchave_' + k, JSON.stringify(data[k]));
+      });
+
+      renderAll();
+      fillUpdateForm();
+
+      if (!firstLoad) toast('☁️ Atualizado de outro dispositivo');
+      firstLoad = false;
+
+    }, err => {
+      console.error('[Firebase]', err);
+      setSyncStatus('⚠️', 'Erro', '#ef4444');
+    });
+
+  } catch (e) {
+    console.error('[Firebase init]', e);
+    setSyncStatus('⚠️', 'Sem Firebase', '#f59e0b');
+  }
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (function init() {
-  document.getElementById('up-date').value = new Date().toISOString().slice(0,10);
+  const hoje = new Date().toISOString().slice(0, 10);
+  document.getElementById('up-date').value = hoje;
   document.getElementById('h-mes').value   = currentYM();
+  document.getElementById('g-data').value  = hoje;
+
+  const d = getData();
+  document.getElementById('apos-atual').value  = d.cdb + d.ouro + d.multi;
+  document.getElementById('apos-aporte').value = d.aporte;
 
   fillUpdateForm();
   renderDashboard();
   renderHistorico();
   renderRules();
+  renderGastos();
+  renderContas();
 
   setTimeout(() => {
     renderDashboard();
     renderChart('chart-cdb-dash');
   }, 150);
+
+  // Firebase: sincroniza em background após render inicial
+  initFirebase();
 })();
 </script>
 </body>
