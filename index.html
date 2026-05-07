@@ -30,6 +30,76 @@
     --pink:       #ec4899;
     --radius:     12px;
     --shadow:     0 4px 24px rgba(0,0,0,0.6);
+    --pat-from:   #1A1200;
+    --pat-to:     #1A0A00;
+  }
+
+  /* ── TEMAS ──────────────────────────────────────────────────────────── */
+  [data-theme="claro"] {
+    --bg:#F0F2F5;--bg2:#FFFFFF;--bg3:#E8EBF0;
+    --border:#D5D9E0;--border2:#B8BEC9;
+    --text:#1A1A2E;--text2:#6B7280;
+    --accent:#FF6B00;--accent-dim:#CC4400;--accent-glow:rgba(255,107,0,0.10);
+    --green:#16a34a;--green-dim:#15803d;
+    --red:#dc2626;--red-dim:#991b1b;
+    --blue:#2563eb;--yellow:#d97706;--purple:#9333ea;--cyan:#0891b2;--pink:#db2777;
+    --shadow:0 4px 24px rgba(0,0,0,0.10);
+    --pat-from:#FFF5E6;--pat-to:#FFF0D4;
+  }
+  [data-theme="oceano"] {
+    --bg:#030C17;--bg2:#071526;--bg3:#0D2035;
+    --border:#1A3A5C;--border2:#1E4D7B;
+    --text:#E0F4FF;--text2:#5A8DB8;
+    --accent:#06b6d4;--accent-dim:#0891b2;--accent-glow:rgba(6,182,212,0.18);
+    --green:#22c55e;--green-dim:#15803d;
+    --red:#ef4444;--red-dim:#991b1b;
+    --blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;--pink:#ec4899;
+    --shadow:0 4px 24px rgba(0,0,0,0.60);
+    --pat-from:#031624;--pat-to:#020E1A;
+  }
+  [data-theme="floresta"] {
+    --bg:#060F08;--bg2:#0C1A0F;--bg3:#142819;
+    --border:#1A3A20;--border2:#1E4D28;
+    --text:#E0FFE8;--text2:#5A9866;
+    --accent:#22c55e;--accent-dim:#16a34a;--accent-glow:rgba(34,197,94,0.18);
+    --green:#22c55e;--green-dim:#15803d;
+    --red:#ef4444;--red-dim:#991b1b;
+    --blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;--pink:#ec4899;
+    --shadow:0 4px 24px rgba(0,0,0,0.60);
+    --pat-from:#071209;--pat-to:#040C06;
+  }
+  [data-theme="roxo"] {
+    --bg:#080610;--bg2:#100D1E;--bg3:#18152C;
+    --border:#2A2050;--border2:#352870;
+    --text:#EDE8FF;--text2:#7868A8;
+    --accent:#a855f7;--accent-dim:#9333ea;--accent-glow:rgba(168,85,247,0.18);
+    --green:#22c55e;--green-dim:#15803d;
+    --red:#ef4444;--red-dim:#991b1b;
+    --blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;--pink:#ec4899;
+    --shadow:0 4px 24px rgba(0,0,0,0.60);
+    --pat-from:#100D20;--pat-to:#080616;
+  }
+  [data-theme="rosa"] {
+    --bg:#100610;--bg2:#1E0D1E;--bg3:#2C152C;
+    --border:#50204A;--border2:#6A2860;
+    --text:#FFE8FF;--text2:#A86090;
+    --accent:#ec4899;--accent-dim:#db2777;--accent-glow:rgba(236,72,153,0.18);
+    --green:#22c55e;--green-dim:#15803d;
+    --red:#ef4444;--red-dim:#991b1b;
+    --blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;--pink:#ec4899;
+    --shadow:0 4px 24px rgba(0,0,0,0.60);
+    --pat-from:#1E0C1E;--pat-to:#140414;
+  }
+  [data-theme="vermelho"] {
+    --bg:#0F0404;--bg2:#1E0808;--bg3:#2C1010;
+    --border:#501818;--border2:#6A2020;
+    --text:#FFE8E8;--text2:#A86060;
+    --accent:#ef4444;--accent-dim:#dc2626;--accent-glow:rgba(239,68,68,0.18);
+    --green:#22c55e;--green-dim:#15803d;
+    --red:#ef4444;--red-dim:#991b1b;
+    --blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;--pink:#ec4899;
+    --shadow:0 4px 24px rgba(0,0,0,0.60);
+    --pat-from:#1E0808;--pat-to:#140404;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -75,33 +145,95 @@
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
   .shake { animation: shake 0.5s ease; }
 
-  /* NAV */
+  /* NAV DRAWER */
+  .nav-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 590;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .nav-overlay.open { opacity: 1; pointer-events: all; }
   nav {
+    position: fixed;
+    top: 0; left: -280px;
+    width: 264px;
+    height: 100vh;
     background: var(--bg2);
+    border-right: 1px solid var(--border);
+    z-index: 600;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  nav.open { left: 0; }
+  .nav-drawer-hd {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
     border-bottom: 1px solid var(--border);
-    display: flex;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    flex-shrink: 0;
   }
-  nav::-webkit-scrollbar { display: none; }
+  .nav-drawer-title { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+  .nav-close-btn {
+    background: none; border: none; color: var(--text2);
+    cursor: pointer; font-size: 20px; padding: 4px 6px;
+    border-radius: 6px; transition: color 0.2s; line-height: 1;
+  }
+  .nav-close-btn:hover { color: var(--text); }
   .nav-btn {
-    background: none;
-    border: none;
-    color: var(--text2);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 13px 18px;
-    cursor: pointer;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
+    background: none; border: none; color: var(--text2);
+    font-size: 14px; font-weight: 500;
+    padding: 14px 20px; cursor: pointer;
+    white-space: nowrap; text-align: left;
+    border-left: 3px solid transparent;
     transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; gap: 10px; width: 100%;
   }
-  .nav-btn:hover { color: var(--text); }
-  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+  .nav-btn:hover { color: var(--text); background: rgba(128,128,128,0.05); }
+  .nav-btn.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 700;
+    background: var(--accent-glow);
+  }
+
+  /* HAMBURGER */
+  .hamburger-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 6px; border-radius: 6px; color: var(--text2);
+    transition: color 0.2s; display: flex; align-items: center; flex-shrink: 0;
+  }
+  .hamburger-btn:hover { color: var(--text); }
+
+  /* THEME SWITCHER */
+  .theme-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 4px 6px; border-radius: 6px; font-size: 18px;
+    color: var(--text2); transition: opacity 0.2s; line-height: 1;
+  }
+  .theme-btn:hover { opacity: 0.65; color: var(--text); }
+  .theme-popup {
+    position: fixed; top: 60px; right: 12px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+    z-index: 700; display: none; box-shadow: var(--shadow);
+    min-width: 210px;
+  }
+  .theme-popup.open { display: block; }
+  .theme-popup-title { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .theme-opt {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--border); transition: all 0.2s;
+    font-size: 13px; font-weight: 600; color: var(--text2);
+  }
+  .theme-opt:hover { border-color: var(--accent); color: var(--text); }
+  .theme-opt.cur { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
+  .theme-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; }
 
   /* MAIN */
   main { max-width: 900px; margin: 0 auto; padding: 24px 16px 80px; }
@@ -130,12 +262,12 @@
 
   /* PATRIMÔNIO */
   .patrimonio-card {
-    background: linear-gradient(135deg, #1A1200 0%, #1A0A00 100%);
-    border: 1px solid rgba(255,107,0,0.35);
+    background: linear-gradient(135deg, var(--pat-from) 0%, var(--pat-to) 100%);
+    border: 1px solid var(--accent-glow);
     border-radius: var(--radius);
     padding: 28px 24px;
     text-align: center;
-    box-shadow: 0 4px 40px rgba(255,107,0,0.12);
+    box-shadow: 0 4px 40px var(--accent-glow);
     margin-bottom: 16px;
     position: relative;
     overflow: hidden;
@@ -145,7 +277,7 @@
     position: absolute;
     top: -40px; right: -40px;
     width: 160px; height: 160px;
-    background: radial-gradient(circle, rgba(255,107,0,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
     pointer-events: none;
   }
   .patrimonio-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
@@ -384,23 +516,7 @@
   .login-logo-icon { font-size: 56px; margin-bottom: 14px; }
   .login-title { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
   .login-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 48px; }
-  .login-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 420px; }
-  @media (max-width: 400px) { .login-cards { grid-template-columns: 1fr; } }
-  .login-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 16px 22px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .login-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(255,107,0,0.14); }
-  .login-card:active { transform: scale(0.97); }
-  .login-card-avatar { font-size: 44px; margin-bottom: 12px; }
-  .login-card-name { font-size: 17px; font-weight: 800; }
-  .login-card-desc { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .login-form { width: 100%; max-width: 360px; }
   .login-card-badge {
     font-size: 11px; font-weight: 700;
     padding: 4px 12px; border-radius: 20px;
@@ -408,7 +524,6 @@
   }
   .badge-personal { background: rgba(255,107,0,0.12); color: var(--accent); border: 1px solid rgba(255,107,0,0.3); }
   .badge-demo     { background: rgba(59,130,246,0.12); color: var(--blue);   border: 1px solid rgba(59,130,246,0.3); }
-  .login-hint { font-size: 12px; color: var(--text2); margin-top: 28px; }
 
   /* ── INDICADOR DE USUÁRIO NO HEADER ────────────────────────── */
   .user-chip {
@@ -428,45 +543,51 @@
   <div class="login-title">Operação <span style="color:var(--accent)">Chave</span></div>
   <div class="login-subtitle">Painel financeiro pessoal</div>
 
-  <!-- Passo 1: Selecionar conta -->
-  <div id="login-step1">
-    <div class="login-cards">
-      <div class="login-card" onclick="selectUser('Dalpim')">
-        <div class="login-card-avatar">👤</div>
-        <div class="login-card-name">Luiz Dalpim</div>
-        <div class="login-card-desc">Conta Pessoal</div>
-        <span class="login-card-badge badge-personal">🔒 Particular</span>
-      </div>
-      <div class="login-card" onclick="selectUser('Teste')">
-        <div class="login-card-avatar">🧪</div>
-        <div class="login-card-name">Usuário Teste</div>
-        <div class="login-card-desc">Conta Demonstração</div>
-        <span class="login-card-badge badge-demo">🌐 Demo</span>
-      </div>
+  <div class="login-form">
+    <div class="form-group">
+      <label class="form-label" for="login-username">Usuário</label>
+      <input type="text" id="login-username" class="form-input"
+             placeholder="Digite seu usuário"
+             autocomplete="username"
+             style="font-size:15px;text-align:center;margin-bottom:0"
+             onkeydown="if(event.key==='Enter')document.getElementById('login-password').focus()">
     </div>
-    <div class="login-hint">Toque em uma conta para continuar</div>
-  </div>
-
-  <!-- Passo 2: Digitar senha -->
-  <div id="login-step2" style="display:none;width:100%;max-width:340px">
-    <div id="login-selected-info" style="text-align:center;margin-bottom:28px"></div>
-    <input type="password" id="login-password" class="form-input"
-           placeholder="Digite sua senha"
-           style="font-size:16px;text-align:center;letter-spacing:3px;margin-bottom:12px"
-           onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="form-group">
+      <label class="form-label" for="login-password">Senha</label>
+      <input type="password" id="login-password" class="form-input"
+             placeholder="Digite sua senha"
+             autocomplete="current-password"
+             style="font-size:15px;text-align:center;letter-spacing:3px;margin-bottom:0"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
     <div id="login-error" style="color:var(--red);text-align:center;font-size:13px;min-height:20px;margin-bottom:12px"></div>
     <button class="btn" onclick="doLogin()">🔓 Entrar</button>
-    <button onclick="backToCards()" style="background:none;border:none;color:var(--text2);cursor:pointer;margin-top:16px;font-size:13px;display:block;width:100%;text-align:center">← Voltar para seleção de conta</button>
   </div>
 </div>
 
 <header>
-  <div class="logo">
-    <span class="logo-icon">🔑</span>
-    <span class="logo-text">Operação <em>Chave</em></span>
-  </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <button onclick="logout()" title="Trocar conta" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:13px;padding:4px 8px;border-radius:8px;transition:color 0.2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">⇄</button>
+    <button class="hamburger-btn" onclick="toggleMenu()" title="Menu" aria-label="Abrir menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <line x1="3" y1="5.5" x2="19" y2="5.5"/>
+        <line x1="3" y1="11" x2="19" y2="11"/>
+        <line x1="3" y1="16.5" x2="19" y2="16.5"/>
+      </svg>
+    </button>
+    <div class="logo">
+      <span class="logo-icon">🔑</span>
+      <span class="logo-text">Operação <em>Chave</em></span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="theme-btn" onclick="toggleThemePopup()" title="Mudar tema">🎨</button>
+    <button onclick="logout()" title="Sair da conta" style="background:none;border:none;color:var(--text2);cursor:pointer;padding:5px 6px;border-radius:6px;transition:color 0.2s;line-height:1;display:flex;align-items:center" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text2)'">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </button>
     <div id="user-chip"></div>
     <button class="privacy-btn" id="privacy-btn" onclick="togglePrivacy()" title="Ocultar/mostrar valores">👁️</button>
     <div id="sync-status" style="font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px">⏳</div>
@@ -476,8 +597,14 @@
     </div>
   </div>
 </header>
+<div id="theme-popup" class="theme-popup"></div>
 
-<nav>
+<div id="nav-overlay" class="nav-overlay" onclick="toggleMenu()"></div>
+<nav id="main-nav">
+  <div class="nav-drawer-hd">
+    <span class="nav-drawer-title">🔑 Operação <span style="color:var(--accent)">Chave</span></span>
+    <button class="nav-close-btn" onclick="toggleMenu()" title="Fechar menu">✕</button>
+  </div>
   <button class="nav-btn active" onclick="showTab('dashboard',this)">📊 Painel</button>
   <button class="nav-btn" onclick="showTab('metas',this)">🎯 Metas</button>
   <button class="nav-btn" onclick="showTab('historico',this)">📈 Histórico</button>
@@ -1112,12 +1239,70 @@ function toast(msg = '✓ Salvo!') {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
+// ─── MENU HAMBÚRGUER ──────────────────────────────────────────────────────────
+function toggleMenu() {
+  document.getElementById('main-nav').classList.toggle('open');
+  document.getElementById('nav-overlay').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('main-nav').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('open');
+}
+
+// ─── TEMAS ────────────────────────────────────────────────────────────────────
+const THEMES = [
+  { id: '',          name: 'Escuro',   color: '#FF6B00' },
+  { id: 'claro',     name: 'Claro',    color: '#FF6B00' },
+  { id: 'oceano',    name: 'Oceano',   color: '#06b6d4' },
+  { id: 'floresta',  name: 'Floresta', color: '#22c55e' },
+  { id: 'roxo',      name: 'Roxo',     color: '#a855f7' },
+  { id: 'rosa',      name: 'Rosa',     color: '#ec4899' },
+  { id: 'vermelho',  name: 'Rubi',     color: '#ef4444' },
+];
+
+function setTheme(id) {
+  if (id) {
+    document.documentElement.setAttribute('data-theme', id);
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  localStorage.setItem('opchave_theme', id);
+  renderThemePopup();
+}
+
+function toggleThemePopup() {
+  const popup = document.getElementById('theme-popup');
+  if (!popup.classList.contains('open')) renderThemePopup();
+  popup.classList.toggle('open');
+}
+
+function renderThemePopup() {
+  const current = document.documentElement.getAttribute('data-theme') || '';
+  document.getElementById('theme-popup').innerHTML =
+    `<div class="theme-popup-title">🎨 Aparência</div><div class="theme-grid">${
+      THEMES.map(t =>
+        `<div class="theme-opt${t.id === current ? ' cur' : ''}" onclick="setTheme('${t.id}')">
+          <div class="theme-dot" style="background:${t.color}"></div>
+          <span>${t.name}</span>
+        </div>`
+      ).join('')
+    }</div>`;
+}
+
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('theme-popup');
+  if (popup && !popup.contains(e.target) && !e.target.closest('.theme-btn')) {
+    popup.classList.remove('open');
+  }
+});
+
 // ─── TABS ─────────────────────────────────────────────────────────────────────
 function showTab(name, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
+  closeMenu();
   if (name === 'historico') { renderChart('chart-cdb'); renderComparativeChart(); }
   if (name === 'metas')     renderMetasDetail();
   if (name === 'gastos')    renderGastos();
@@ -2215,38 +2400,30 @@ async function sha256(text) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-let selectedUser = null;
-
-function selectUser(user) {
-  selectedUser = user;
-  const info = USER_INFO[user];
-  document.getElementById('login-step1').style.display = 'none';
-  document.getElementById('login-step2').style.display = 'block';
-  const cls      = user === 'Dalpim' ? 'badge-personal' : 'badge-demo';
-  const badgeText = user === 'Dalpim' ? '🔒 Particular' : '🌐 Demo';
-  document.getElementById('login-selected-info').innerHTML = `
-    <div style="font-size:48px;margin-bottom:12px">${info.icon}</div>
-    <div style="font-size:20px;font-weight:800">${info.label}</div>
-    <span class="login-card-badge ${cls}" style="display:inline-block;margin-top:10px">${badgeText}</span>`;
-  document.getElementById('login-password').value = '';
-  document.getElementById('login-error').textContent = '';
-  setTimeout(() => document.getElementById('login-password').focus(), 100);
-}
-
-function backToCards() {
-  document.getElementById('login-step2').style.display = 'none';
-  document.getElementById('login-step1').style.display = 'block';
-  selectedUser = null;
-}
-
 async function doLogin() {
-  const pwd = document.getElementById('login-password').value;
-  if (!pwd) { document.getElementById('login-error').textContent = '⚠️ Digite a senha'; return; }
+  const userRaw = (document.getElementById('login-username').value || '').trim();
+  const pwd     = document.getElementById('login-password').value;
+  const errEl   = document.getElementById('login-error');
+
+  if (!userRaw) { errEl.textContent = '⚠️ Digite o usuário'; document.getElementById('login-username').focus(); return; }
+  if (!pwd)     { errEl.textContent = '⚠️ Digite a senha';   document.getElementById('login-password').focus();  return; }
+
+  const key = Object.keys(CREDS).find(k => k.toLowerCase() === userRaw.toLowerCase());
+  if (!key) {
+    errEl.textContent = '❌ Usuário não encontrado';
+    const inp = document.getElementById('login-username');
+    inp.style.borderColor = 'var(--red)';
+    inp.classList.add('shake');
+    setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+    inp.focus();
+    return;
+  }
+
   const hash = await sha256(pwd);
-  if (hash === CREDS[selectedUser]) {
-    loginAs(selectedUser);
+  if (hash === CREDS[key]) {
+    loginAs(key);
   } else {
-    document.getElementById('login-error').textContent = '❌ Senha incorreta';
+    errEl.textContent = '❌ Senha incorreta';
     const inp = document.getElementById('login-password');
     inp.value = '';
     inp.style.borderColor = 'var(--red)';
@@ -2318,7 +2495,6 @@ function loginAs(user) {
 
 function logout() {
   if (!confirm('Sair da conta?')) return;
-  // Para listeners do Firebase
   if (window._fbRef) { window._fbRef.off(); window._fbRef = null; }
   if (window._fbDB)  { window._fbDB.ref('.info/connected').off(); window._fbDB = null; }
   currentUser = null;
@@ -2326,18 +2502,33 @@ function logout() {
   localStorage.removeItem('opchave_session');
   setSyncStatus('⏳', '', '#888');
   document.getElementById('user-chip').innerHTML = '';
-  // Volta para login (passo 1 — seleção de conta)
-  backToCards();
+  const unEl = document.getElementById('login-username');
+  const pwEl = document.getElementById('login-password');
+  const errEl = document.getElementById('login-error');
+  if (unEl) unEl.value = '';
+  if (pwEl) pwEl.value = '';
+  if (errEl) errEl.textContent = '';
   document.getElementById('login-screen').style.display = 'flex';
+  setTimeout(() => { if (unEl) unEl.focus(); }, 200);
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (function init() {
+  // Restaura tema salvo
+  const savedTheme = localStorage.getItem('opchave_theme') || '';
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+
   const session = localStorage.getItem('opchave_session');
   if (session === 'Dalpim' || session === 'Teste') {
     loginAs(session);
+  } else {
+    setTimeout(() => {
+      const unEl = document.getElementById('login-username');
+      if (unEl) unEl.focus();
+    }, 200);
   }
-  // Caso contrário a tela de login já está visível por default
 })();
 </script>
 </body>
