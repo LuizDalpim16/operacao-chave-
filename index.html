@@ -505,18 +505,69 @@
   .apos-result-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
   .apos-result-val { font-size: 22px; font-weight: 800; }
 
-  /* ── TELA DE LOGIN ─────────────────────────────────────────── */
-  #login-screen {
+  /* ── TELA DE LOGIN / RECUPERAÇÃO ───────────────────────────── */
+  #login-screen,
+  #recovery-panel {
     position: fixed; inset: 0; z-index: 2000;
     background: var(--bg);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+    background-image:
+      radial-gradient(ellipse at 15% 25%, var(--accent-glow) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 75%, rgba(168,85,247,0.07) 0%, transparent 45%);
+    display: flex; align-items: center; justify-content: center;
     padding: 24px;
   }
-  .login-logo-icon { font-size: 56px; margin-bottom: 14px; }
-  .login-title { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
-  .login-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 48px; }
-  .login-form { width: 100%; max-width: 360px; }
+  #recovery-panel { display: none; z-index: 2001; }
+  #recovery-panel.open { display: flex; }
+  .login-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px 28px;
+    width: 100%; max-width: 380px;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.45);
+    animation: loginSlide 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  @keyframes loginSlide {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .login-logo-wrap { text-align: center; margin-bottom: 28px; }
+  .login-logo-ring {
+    width: 70px; height: 70px;
+    background: var(--accent-glow);
+    border: 2px solid rgba(255,107,0,0.25);
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 30px; margin-bottom: 14px;
+    box-shadow: 0 0 28px var(--accent-glow);
+    animation: logoGlow 3s ease-in-out infinite;
+  }
+  @keyframes logoGlow {
+    0%,100% { box-shadow: 0 0 18px var(--accent-glow); }
+    50%      { box-shadow: 0 0 38px var(--accent-glow), 0 0 55px var(--accent-glow); }
+  }
+  .login-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .login-subtitle { font-size: 13px; color: var(--text2); }
+  .input-wrap { position: relative; margin-bottom: 12px; }
+  .input-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--text2); pointer-events: none; display: flex;
+  }
+  .input-wrap .form-input { padding-left: 42px; padding-right: 44px; text-align: left; letter-spacing: normal; }
+  .input-pw-toggle {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text2); cursor: pointer;
+    padding: 4px; border-radius: 4px; line-height: 1; transition: color 0.2s; display: flex;
+  }
+  .input-pw-toggle:hover { color: var(--accent); }
+  .login-error-msg { color: var(--red); text-align: center; font-size: 13px; min-height: 18px; margin-bottom: 10px; }
+  .forgot-link { text-align: center; margin-top: 14px; }
+  .forgot-link button {
+    background: none; border: none; color: var(--text2);
+    font-size: 12px; cursor: pointer;
+    padding: 4px 8px; border-radius: 4px; transition: color 0.2s;
+  }
+  .forgot-link button:hover { color: var(--accent); }
   .login-card-badge {
     font-size: 11px; font-weight: 700;
     padding: 4px 12px; border-radius: 20px;
@@ -539,29 +590,91 @@
 
 <!-- ── TELA DE LOGIN ──────────────────────────────────────────────────────── -->
 <div id="login-screen">
-  <div class="login-logo-icon">🔑</div>
-  <div class="login-title">Operação <span style="color:var(--accent)">Chave</span></div>
-  <div class="login-subtitle">Painel financeiro pessoal</div>
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <div class="login-logo-ring">🔑</div>
+      <div class="login-title">Operação <span style="color:var(--accent)">Chave</span></div>
+      <div class="login-subtitle">Painel financeiro pessoal</div>
+    </div>
 
-  <div class="login-form">
-    <div class="form-group">
-      <label class="form-label" for="login-username">Usuário</label>
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
       <input type="text" id="login-username" class="form-input"
-             placeholder="Digite seu usuário"
+             placeholder="Usuário"
              autocomplete="username"
-             style="font-size:15px;text-align:center;margin-bottom:0"
              onkeydown="if(event.key==='Enter')document.getElementById('login-password').focus()">
     </div>
-    <div class="form-group">
-      <label class="form-label" for="login-password">Senha</label>
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </span>
       <input type="password" id="login-password" class="form-input"
-             placeholder="Digite sua senha"
+             placeholder="Senha"
              autocomplete="current-password"
-             style="font-size:15px;text-align:center;letter-spacing:3px;margin-bottom:0"
              onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="input-pw-toggle" type="button" onclick="togglePwVis('login-password',this)" title="Mostrar/ocultar senha">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
-    <div id="login-error" style="color:var(--red);text-align:center;font-size:13px;min-height:20px;margin-bottom:12px"></div>
-    <button class="btn" onclick="doLogin()">🔓 Entrar</button>
+    <div id="login-error" class="login-error-msg"></div>
+    <button class="btn" onclick="doLogin()">Entrar</button>
+    <div class="forgot-link">
+      <button type="button" onclick="showForgot()">Esqueceu sua senha?</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAINEL DE RECUPERAÇÃO DE SENHA ─────────────────────────────────────── -->
+<div id="recovery-panel">
+  <div class="login-card">
+    <div class="login-logo-wrap" style="margin-bottom:20px">
+      <div class="login-logo-ring" style="font-size:24px;width:60px;height:60px">🔒</div>
+      <div class="login-title" style="font-size:22px">Redefinir Senha</div>
+      <div class="login-subtitle">Digite o e-mail da sua conta</div>
+    </div>
+
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </span>
+      <input type="email" id="rec-email" class="form-input"
+             placeholder="seu@email.com"
+             onkeydown="if(event.key==='Enter')checkRecoveryEmail()">
+    </div>
+    <div id="rec-email-msg" class="login-error-msg"></div>
+    <button class="btn" onclick="checkRecoveryEmail()">Verificar E-mail</button>
+
+    <div id="rec-newpass-section" style="display:none;margin-top:18px">
+      <input type="hidden" id="rec-target-user">
+      <div class="input-wrap">
+        <span class="input-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <input type="password" id="rec-newpass" class="form-input" placeholder="Nova senha"
+               onkeydown="if(event.key==='Enter')document.getElementById('rec-confirmpw').focus()">
+        <button class="input-pw-toggle" type="button" onclick="togglePwVis('rec-newpass',this)" title="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="input-wrap">
+        <span class="input-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <input type="password" id="rec-confirmpw" class="form-input" placeholder="Confirmar nova senha"
+               onkeydown="if(event.key==='Enter')doResetPassword()">
+        <button class="input-pw-toggle" type="button" onclick="togglePwVis('rec-confirmpw',this)" title="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div id="rec-reset-msg" class="login-error-msg"></div>
+      <button class="btn btn-green" onclick="doResetPassword()">Salvar Nova Senha</button>
+    </div>
+
+    <div class="forgot-link" style="margin-top:16px">
+      <button type="button" onclick="closeForgot()">← Voltar ao login</button>
+    </div>
   </div>
 </div>
 
@@ -2390,6 +2503,95 @@ const USER_INFO = {
   Teste:  { label: 'Usuário Teste', chipClass: 'user-chip user-chip-demo',     icon: '🧪' },
 };
 
+const USER_EMAILS = {
+  Dalpim: 'luizferdalpim@gmail.com',
+  Teste:  'teste@operacaochave.com',
+};
+
+function togglePwVis(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const svg = btn.querySelector('svg');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    inp.type = 'password';
+    svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+function showForgot() {
+  document.getElementById('rec-email').value = '';
+  document.getElementById('rec-email-msg').textContent = '';
+  document.getElementById('rec-newpass-section').style.display = 'none';
+  document.getElementById('rec-target-user').value = '';
+  document.getElementById('recovery-panel').classList.add('open');
+  setTimeout(() => document.getElementById('rec-email').focus(), 100);
+}
+
+function closeForgot() {
+  document.getElementById('recovery-panel').classList.remove('open');
+}
+
+function checkRecoveryEmail() {
+  const email = (document.getElementById('rec-email').value || '').trim().toLowerCase();
+  const msgEl = document.getElementById('rec-email-msg');
+
+  if (!email) {
+    msgEl.style.color = 'var(--red)';
+    msgEl.textContent = '⚠️ Digite seu e-mail';
+    return;
+  }
+
+  const match = Object.entries(USER_EMAILS).find(([, e]) => e.toLowerCase() === email);
+  if (!match) {
+    msgEl.style.color = 'var(--red)';
+    msgEl.textContent = '❌ E-mail não encontrado';
+    const inp = document.getElementById('rec-email');
+    inp.style.borderColor = 'var(--red)';
+    inp.classList.add('shake');
+    setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+    return;
+  }
+
+  msgEl.style.color = 'var(--green)';
+  msgEl.textContent = '✓ E-mail verificado! Crie uma nova senha.';
+  document.getElementById('rec-target-user').value = match[0];
+  document.getElementById('rec-newpass-section').style.display = 'block';
+  setTimeout(() => document.getElementById('rec-newpass').focus(), 100);
+}
+
+async function doResetPassword() {
+  const user   = document.getElementById('rec-target-user').value;
+  const newpw  = document.getElementById('rec-newpass').value;
+  const confpw = document.getElementById('rec-confirmpw').value;
+  const msgEl  = document.getElementById('rec-reset-msg');
+
+  if (!newpw) {
+    msgEl.style.color = 'var(--red)'; msgEl.textContent = '⚠️ Digite a nova senha'; return;
+  }
+  if (newpw.length < 4) {
+    msgEl.style.color = 'var(--red)'; msgEl.textContent = '⚠️ Mínimo 4 caracteres'; return;
+  }
+  if (newpw !== confpw) {
+    msgEl.style.color = 'var(--red)'; msgEl.textContent = '❌ Senhas não coincidem'; return;
+  }
+
+  const hash = await sha256(newpw);
+  localStorage.setItem(`opchave_pwreset_${user}`, hash);
+
+  msgEl.style.color = 'var(--green)';
+  msgEl.textContent = '✓ Senha redefinida com sucesso!';
+
+  setTimeout(() => {
+    closeForgot();
+    const unEl = document.getElementById('login-username');
+    if (unEl) unEl.value = user;
+    document.getElementById('login-password').value = '';
+    setTimeout(() => document.getElementById('login-password').focus(), 100);
+  }, 1500);
+}
+
 const CREDS = {
   Dalpim: '0dd964f0ba01f3a9f8f06a3fbcc22eceb84aad5397047846c148e3cf85a20446',
   Teste:  '5092766920b0cb9f3687d3e3f4bf70453ff54b83ced9dfdd5a0ab153ccd3bb8a',
@@ -2420,7 +2622,8 @@ async function doLogin() {
   }
 
   const hash = await sha256(pwd);
-  if (hash === CREDS[key]) {
+  const customHash = localStorage.getItem(`opchave_pwreset_${key}`);
+  if (hash === (customHash || CREDS[key])) {
     loginAs(key);
   } else {
     errEl.textContent = '❌ Senha incorreta';
