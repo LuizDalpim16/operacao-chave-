@@ -585,6 +585,124 @@
   }
   .user-chip-personal { background: rgba(255,107,0,0.12); color: var(--accent); }
   .user-chip-demo     { background: rgba(59,130,246,0.12); color: var(--blue); }
+
+  /* ── FAB "+" ──────────────────────────────────────────────────── */
+  .fab {
+    position: fixed; bottom: 28px; right: 20px;
+    width: 56px; height: 56px;
+    background: var(--accent); border: none; border-radius: 50%;
+    color: #fff; font-size: 26px; font-weight: 300;
+    cursor: pointer; z-index: 500;
+    box-shadow: 0 4px 20px rgba(255,107,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s; line-height: 1;
+  }
+  .fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(255,107,0,0.6); }
+  .fab:active { transform: scale(0.95); }
+
+  /* ── MODAL SHEET ────────────────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+    z-index: 800; display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; animation: ovFadeIn 0.2s ease; }
+  @keyframes ovFadeIn { from { opacity:0 } to { opacity:1 } }
+  .modal-sheet {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0; padding: 0 20px 40px;
+    width: 100%; max-width: 520px;
+    animation: sheetSlideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+    max-height: 92vh; overflow-y: auto;
+  }
+  @keyframes sheetSlideUp { from { transform: translateY(60px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+  .modal-handle { width: 40px; height: 4px; background: var(--border2); border-radius: 2px; margin: 14px auto 20px; }
+  .modal-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .modal-title { font-size: 17px; font-weight: 800; }
+  .modal-close { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 20px; padding: 4px 6px; border-radius: 6px; transition: color 0.2s; line-height: 1; }
+  .modal-close:hover { color: var(--text); }
+
+  /* Tipo selector */
+  .tipo-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+  .tipo-btn {
+    padding: 12px 6px; border-radius: 10px; border: 2px solid var(--border);
+    background: var(--bg3); color: var(--text2);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    transition: all 0.2s;
+  }
+  .tipo-btn:hover { border-color: var(--border2); }
+  .tipo-btn.sel-saida   { border-color: var(--red);   background: rgba(239,68,68,0.08);  color: var(--red); }
+  .tipo-btn.sel-entrada { border-color: var(--green); background: rgba(34,197,94,0.08); color: var(--green); }
+  .tipo-btn.sel-aporte  { border-color: var(--accent); background: var(--accent-glow);   color: var(--accent); }
+
+  /* ── USER DROPDOWN ───────────────────────────────────────────────── */
+  .user-menu-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 5px 8px; border-radius: 8px;
+    display: flex; align-items: center; gap: 7px;
+    color: var(--text); transition: all 0.2s; font-size: 13px; font-weight: 700;
+  }
+  .user-menu-btn:hover { background: var(--bg3); }
+  .user-menu-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+  .user-menu-chevron { font-size: 10px; color: var(--text2); flex-shrink: 0; }
+  .user-dropdown {
+    position: fixed; top: 60px; right: 12px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); z-index: 700;
+    display: none; box-shadow: var(--shadow); min-width: 230px;
+    animation: udSlideDown 0.18s ease;
+  }
+  @keyframes udSlideDown { from { opacity:0; transform: translateY(-8px) } to { opacity:1; transform: translateY(0) } }
+  .user-dropdown.open { display: block; }
+  .ud-header { padding: 14px 16px 12px; border-bottom: 1px solid var(--border); }
+  .ud-user-name { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+  .ud-status-row { font-size: 11px; color: var(--text2); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ud-body { padding: 6px; }
+  .ud-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px; cursor: pointer;
+    transition: background 0.15s; font-size: 13px; font-weight: 600;
+    color: var(--text2); border: none; background: none; width: 100%; text-align: left;
+  }
+  .ud-item:hover { background: var(--bg3); color: var(--text); }
+  .ud-item.danger:hover { background: rgba(239,68,68,0.08); color: var(--red); }
+  .ud-divider { border: none; border-top: 1px solid var(--border); margin: 4px 6px; }
+
+  /* ── LOGO CLICÁVEL ───────────────────────────────────────────────── */
+  .logo-btn {
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 6px; border-radius: 8px; transition: opacity 0.2s;
+  }
+  .logo-btn:hover { opacity: 0.75; }
+
+  /* ── PAINEL DE CADASTRO ─────────────────────────────────────────── */
+  #register-panel { display: none; z-index: 2002; }
+  #register-panel.open { display: flex; }
+
+  /* ── REGRA ITEM com exceção ──────────────────────────────────────── */
+  .rule-excecao { font-size: 11px; color: var(--text2); margin-top: 3px; font-style: italic; opacity: 0.8; }
+  .rule-delete { background: none; border: none; color: var(--text2); cursor: pointer; padding: 5px 7px; border-radius: 4px; font-size: 14px; transition: color 0.2s; flex-shrink: 0; line-height: 1; }
+  .rule-delete:hover { color: var(--red); }
+
+  /* ── LANÇAMENTOS ─────────────────────────────────────────────────── */
+  .lancamento-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .lancamento-item:last-child { border-bottom: none; }
+  .lancamento-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .li-saida   { background: rgba(239,68,68,0.10); }
+  .li-entrada { background: rgba(34,197,94,0.12); }
+  .li-aporte  { background: rgba(255,107,0,0.10); }
+  .lancamento-info { flex: 1; min-width: 0; }
+  .lancamento-desc { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lancamento-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .lancamento-val-saida   { font-size: 15px; font-weight: 700; color: var(--red); white-space: nowrap; }
+  .lancamento-val-entrada { font-size: 15px; font-weight: 700; color: var(--green); white-space: nowrap; }
+  .lancamento-val-aporte  { font-size: 15px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+  /* ── GRÁFICO INVESTIMENTOS ──────────────────────────────────────── */
+  .inv-chart-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .inv-chart-tab { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--bg3); color: var(--text2); transition: all 0.2s; }
+  .inv-chart-tab.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
@@ -623,6 +741,10 @@
     <button class="btn" onclick="doLogin()">Entrar</button>
     <div class="forgot-link">
       <button type="button" onclick="showForgot()">Esqueceu sua senha?</button>
+    </div>
+    <div style="text-align:center;margin-top:10px;padding-top:14px;border-top:1px solid var(--border)">
+      <span style="font-size:12px;color:var(--text2)">Ainda não tem conta?</span>
+      <button type="button" onclick="showRegister()" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:6px;text-decoration:underline;text-underline-offset:3px;margin-left:4px">Criar conta</button>
     </div>
   </div>
 </div>
@@ -679,6 +801,59 @@
   </div>
 </div>
 
+<!-- ── PAINEL DE CADASTRO ──────────────────────────────────────────────────────── -->
+<div id="register-panel" style="position:fixed;inset:0;z-index:2002;background:var(--bg);background-image:radial-gradient(ellipse at 15% 25%, var(--accent-glow) 0%, transparent 45%),radial-gradient(ellipse at 85% 75%, rgba(168,85,247,0.07) 0%, transparent 45%);align-items:center;justify-content:center;padding:24px;">
+  <div class="login-card">
+    <div class="login-logo-wrap" style="margin-bottom:20px">
+      <div class="login-logo-ring" style="font-size:24px;width:60px;height:60px">👤</div>
+      <div class="login-title" style="font-size:22px">Criar Conta</div>
+      <div class="login-subtitle">Preencha seus dados para começar</div>
+    </div>
+
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
+      <input type="text" id="reg-name" class="form-input" placeholder="Seu nome completo" autocomplete="name">
+    </div>
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </span>
+      <input type="email" id="reg-email" class="form-input" placeholder="E-mail" autocomplete="email">
+    </div>
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
+      <input type="text" id="reg-username" class="form-input" placeholder="Nome de usuário (sem espaços)" autocomplete="username">
+    </div>
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </span>
+      <input type="password" id="reg-password" class="form-input" placeholder="Senha (mín. 4 caracteres)" autocomplete="new-password">
+      <button class="input-pw-toggle" type="button" onclick="togglePwVis('reg-password',this)" title="Mostrar senha">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div class="input-wrap">
+      <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </span>
+      <input type="password" id="reg-confirm" class="form-input" placeholder="Confirmar senha" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()">
+      <button class="input-pw-toggle" type="button" onclick="togglePwVis('reg-confirm',this)" title="Mostrar senha">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div id="reg-error" class="login-error-msg"></div>
+    <button class="btn btn-green" onclick="doRegister()">Criar Conta</button>
+    <div class="forgot-link" style="margin-top:14px">
+      <button type="button" onclick="closeRegister()">← Já tenho conta</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div style="display:flex;align-items:center;gap:10px">
     <button class="hamburger-btn" onclick="toggleMenu()" title="Menu" aria-label="Abrir menu">
@@ -688,30 +863,45 @@
         <line x1="3" y1="16.5" x2="19" y2="16.5"/>
       </svg>
     </button>
-    <div class="logo">
+    <button class="logo-btn" onclick="goHome()" title="Ir para o painel">
       <span class="logo-icon">🔑</span>
       <span class="logo-text">Operação <em>Chave</em></span>
-    </div>
+    </button>
   </div>
   <div style="display:flex;align-items:center;gap:8px">
     <button class="theme-btn" onclick="toggleThemePopup()" title="Mudar tema">🎨</button>
-    <button onclick="logout()" title="Sair da conta" style="background:none;border:none;color:var(--text2);cursor:pointer;padding:5px 6px;border-radius:6px;transition:color 0.2s;line-height:1;display:flex;align-items:center" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text2)'">
-      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-        <polyline points="16 17 21 12 16 7"/>
-        <line x1="21" y1="12" x2="9" y2="12"/>
-      </svg>
+    <button id="user-menu-btn" class="user-menu-btn" onclick="toggleUserDropdown()" title="Menu do usuário">
+      <span id="user-menu-icon" style="font-size:16px">👤</span>
+      <span id="user-menu-name" class="user-menu-name">—</span>
+      <span class="user-menu-chevron">▼</span>
     </button>
-    <div id="user-chip"></div>
-    <button class="privacy-btn" id="privacy-btn" onclick="togglePrivacy()" title="Ocultar/mostrar valores">👁️</button>
-    <div id="sync-status" style="font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px">⏳</div>
-    <div class="status-badge">
-      <div class="status-dot"></div>
-      Ativo
-    </div>
   </div>
 </header>
 <div id="theme-popup" class="theme-popup"></div>
+
+<!-- ── USER DROPDOWN ────────────────────────────────────────────────────────── -->
+<div id="user-dropdown" class="user-dropdown">
+  <div class="ud-header">
+    <div class="ud-user-name" id="ud-user-name">—</div>
+    <div class="ud-status-row">
+      <span id="ud-sync-status">⏳</span>
+      <span id="ud-active-badge" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 2s infinite"></span>Ativo</span>
+    </div>
+  </div>
+  <div class="ud-body">
+    <button class="ud-item" id="ud-privacy-btn" onclick="togglePrivacy()">
+      <span id="ud-privacy-icon" style="display:flex">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </span>
+      <span id="ud-privacy-label">Ocultar valores</span>
+    </button>
+    <hr class="ud-divider">
+    <button class="ud-item danger" onclick="closeUserDropdown();logout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair da conta
+    </button>
+  </div>
+</div>
 
 <div id="nav-overlay" class="nav-overlay" onclick="toggleMenu()"></div>
 <nav id="main-nav">
@@ -761,9 +951,13 @@
       </div>
     </div>
 
-    <div class="section-title"><span>📉</span> Evolução do CDB + Projeção</div>
+    <div class="section-title"><span>📊</span> Investimentos — Histórico & Comparativo</div>
     <div class="card" style="margin-bottom:20px;padding:16px 16px 12px">
-      <div class="chart-wrap"><canvas id="chart-cdb-dash"></canvas></div>
+      <div class="inv-chart-tabs">
+        <button class="inv-chart-tab active" id="inv-tab-comp" onclick="switchInvChart('comparativo')">Comparativo</button>
+        <button class="inv-chart-tab" id="inv-tab-cdb" onclick="switchInvChart('cdb')">CDB + Projeção</button>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-inv-dash"></canvas></div>
     </div>
 
     <div class="section-title"><span>💰</span> Orçamento Mensal</div>
@@ -1162,8 +1356,12 @@
     <div class="section-title"><span>➕</span> Nova Regra</div>
     <div class="card">
       <div class="form-group">
-        <label class="form-label">Descrição</label>
+        <label class="form-label">Descrição da regra</label>
         <input class="form-input" id="new-rule-text" type="text" placeholder="Ex: Não usar cartão para delivery">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Exceção / Quando não se aplica <span style="font-weight:400;opacity:0.7">(opcional)</span></label>
+        <input class="form-input" id="new-rule-excecao" type="text" placeholder="Ex: Exceto em viagens de negócios">
       </div>
       <button class="btn" onclick="addRule()">Adicionar Regra</button>
     </div>
@@ -1206,6 +1404,10 @@
         <label class="form-label">📦 Aporte mensal planejado (R$)</label>
         <input class="form-input" id="up-aporte" type="number" value="500">
       </div>
+      <div class="form-group">
+        <label class="form-label">📅 Avisar vencimentos com antecedência (dias)</label>
+        <input class="form-input" id="up-dias-aviso" type="number" value="3" min="1" max="30">
+      </div>
       <button class="btn" onclick="salvarConfig()">💾 Salvar Configurações</button>
     </div>
 
@@ -1228,6 +1430,99 @@
   </div>
 
 </main>
+
+<!-- ── FAB BUTTON ─────────────────────────────────────────────────────────── -->
+<button class="fab" id="fab-btn" onclick="showAddModal()" title="Novo lançamento" style="display:none">+</button>
+
+<!-- ── MODAL NOVO LANÇAMENTO ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeAddModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-hd">
+      <div class="modal-title">Novo Lançamento</div>
+      <button class="modal-close" onclick="closeAddModal()">✕</button>
+    </div>
+
+    <div class="tipo-selector">
+      <button class="tipo-btn sel-saida" id="tipo-saida" onclick="selectTipo('saida')">
+        <span style="font-size:20px">📤</span>
+        <span>Saída</span>
+      </button>
+      <button class="tipo-btn" id="tipo-entrada" onclick="selectTipo('entrada')">
+        <span style="font-size:20px">📥</span>
+        <span>Entrada</span>
+      </button>
+      <button class="tipo-btn" id="tipo-aporte" onclick="selectTipo('aporte')">
+        <span style="font-size:20px">📈</span>
+        <span>Aporte</span>
+      </button>
+    </div>
+
+    <!-- Campos de Saída / Entrada -->
+    <div id="lanc-form-comum">
+      <div class="form-group">
+        <label class="form-label">Descrição</label>
+        <input class="form-input" id="lanc-desc" type="text" placeholder="Ex: Almoço, Salário...">
+      </div>
+      <div class="grid-2">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Valor (R$)</label>
+          <input class="form-input" id="lanc-valor" type="number" placeholder="0,00" step="0.01" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Data</label>
+          <input class="form-input" id="lanc-data" type="date">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px" id="lanc-cat-group">
+        <label class="form-label">Categoria</label>
+        <select class="form-input" id="lanc-cat">
+          <option value="alimentacao">🍔 Alimentação</option>
+          <option value="transporte">🚗 Transporte</option>
+          <option value="lazer">🎮 Lazer</option>
+          <option value="saude">🏥 Saúde</option>
+          <option value="moradia">🏠 Moradia</option>
+          <option value="educacao">📚 Educação</option>
+          <option value="compras">🛍️ Compras</option>
+          <option value="servicos">💡 Serviços</option>
+          <option value="outros">➕ Outros</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:12px;display:none" id="lanc-receita-group">
+        <label class="form-label">Tipo de entrada</label>
+        <select class="form-input" id="lanc-receita-cat">
+          <option value="salario">💰 Salário</option>
+          <option value="freelance">💼 Freelance / Extra</option>
+          <option value="venda">🛒 Venda</option>
+          <option value="rendimento">📈 Rendimento</option>
+          <option value="outros">➕ Outros</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Campos de Aporte -->
+    <div id="lanc-form-aporte" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Investimento</label>
+        <select class="form-input" id="lanc-inv">
+          <option value="cdb">🏦 CDB 100% CDI</option>
+          <option value="ouro">🥇 Fundo Ouro</option>
+          <option value="multi">📈 Multimercado</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor do aporte (R$)</label>
+        <input class="form-input" id="lanc-aporte-valor" type="number" placeholder="0,00" step="0.01" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data</label>
+        <input class="form-input" id="lanc-aporte-data" type="date">
+      </div>
+    </div>
+
+    <button class="btn" style="margin-top:4px" id="lanc-submit-btn" onclick="addLancamento()">+ Registrar</button>
+  </div>
+</div>
 
 <div id="toast">✓ Salvo!</div>
 
@@ -1312,20 +1607,24 @@ function save(key, val) {
 function getData() { return appData; }
 
 function initAppData() {
+  const isHardcoded = CREDS.hasOwnProperty(currentUser);
   const D = currentUser === 'Teste' ? DEFAULTS_TESTE : DEFAULTS;
+  const defBase = isHardcoded ? D : { ...DEFAULTS, rules: [], gastos: [], contas: [], historico: [] };
   appData = {
-    cdb:          load('cdb')          ?? D.cdb,
-    ouro:         load('ouro')         ?? D.ouro,
-    multi:        load('multi')        ?? D.multi,
-    date:         load('date')         ?? D.date,
-    salario:      load('salario')      ?? D.salario,
-    aporte:       load('aporte')       ?? D.aporte,
-    investidoMes: load('investidoMes') ?? D.investidoMes,
-    historico:    load('historico')    ?? D.historico,
-    rules:        load('rules')        ?? D.rules,
-    gastos:       load('gastos')       ?? D.gastos,
-    contas:       load('contas')       ?? D.contas,
-    metasOrder:   load('metasOrder')   ?? D.metasOrder,
+    cdb:          load('cdb')          ?? defBase.cdb,
+    ouro:         load('ouro')         ?? defBase.ouro,
+    multi:        load('multi')        ?? defBase.multi,
+    date:         load('date')         ?? defBase.date,
+    salario:      load('salario')      ?? defBase.salario,
+    aporte:       load('aporte')       ?? defBase.aporte,
+    investidoMes: load('investidoMes') ?? defBase.investidoMes,
+    historico:    load('historico')    ?? defBase.historico,
+    rules:        load('rules')        ?? defBase.rules,
+    gastos:       load('gastos')       ?? defBase.gastos,
+    contas:       load('contas')       ?? defBase.contas,
+    metasOrder:   load('metasOrder')   ?? defBase.metasOrder,
+    diasAviso:    load('diasAviso')    ?? 3,
+    lancamentos:  load('lancamentos')  ?? [],
   };
 }
 
@@ -1447,7 +1746,10 @@ function renderDashboard() {
   document.getElementById('pat-total').textContent = fmt(total);
   document.getElementById('pat-date').textContent  = fmtDate(d.date);
   const patUser = document.getElementById('pat-user');
-  if (patUser) patUser.textContent = currentUser === 'Teste' ? 'Demo' : 'Luiz';
+  if (patUser) {
+    const info = USER_INFO[currentUser] || DYNAMIC_USERS[currentUser] || null;
+    patUser.textContent = info ? info.label : currentUser;
+  }
   document.getElementById('val-cdb').textContent   = fmt(d.cdb);
   document.getElementById('val-ouro').textContent  = fmt(d.ouro);
   document.getElementById('val-multi').textContent = fmt(d.multi);
@@ -1504,19 +1806,20 @@ function renderDashboard() {
   if (avisosEl) {
     const hoje = new Date();
     const diaHoje = hoje.getDate();
+    const diasAviso = d.diasAviso ?? 3;
     const vencProximos = (d.contas || []).filter(c => {
       if ((c.pagos || []).includes(ym)) return false;
       let dias = c.dia - diaHoje;
       if (dias < 0) dias += 30;
-      return dias <= 7;
+      return dias <= diasAviso;
     });
     if (vencProximos.length > 0) {
       avisosEl.innerHTML = vencProximos.map(c => {
         let dias = c.dia - diaHoje;
         if (dias < 0) dias += 30;
-        const cls = dias <= 3 ? 'alert' : 'alert alert-yellow';
-        const msg = dias === 0 ? 'vence <strong>hoje</strong>' : `vence em <strong>${dias} dias</strong>`;
-        return `<div class="${cls}"><span>📅</span><span><strong>${c.nome}</strong> ${msg} · ${fmt(c.valor)}</span></div>`;
+        const cls = dias <= 1 ? 'alert' : 'alert alert-yellow';
+        const msg = dias === 0 ? 'vence <strong>hoje</strong>' : `vence em <strong>${dias} dia${dias > 1 ? 's' : ''}</strong>`;
+        return `<div class="${cls}"><span>📅</span><span><strong>${escapeHtml(c.nome)}</strong> ${msg} · ${fmt(c.valor)}</span></div>`;
       }).join('');
       avisosEl.style.display = '';
     } else {
@@ -1525,7 +1828,7 @@ function renderDashboard() {
     }
   }
 
-  renderChart('chart-cdb-dash');
+  renderInvDashChart();
 }
 
 // ─── CHART.JS ─────────────────────────────────────────────────────────────────
@@ -2243,6 +2546,7 @@ function renderContas() {
     return { ...c, diasAte: dias };
   }).sort((a, b) => a.diasAte - b.diasAte);
 
+  const diasAviso = d.diasAviso ?? 3;
   const TIPO_LABEL = { fixa: '🔄 Fixa', parcelada: '📦 Parcelada', variavel: '📊 Variável' };
 
   listEl.innerHTML = sorted.map(c => {
@@ -2255,10 +2559,10 @@ function renderContas() {
     } else if (c.diasAte === 0) {
       badge = `<span class="status-tag tag-red">⚠️ Hoje!</span>`;
       extraClass = 'conta-urgente';
-    } else if (c.diasAte <= 3) {
+    } else if (c.diasAte <= Math.max(1, diasAviso - 2)) {
       badge = `<span class="status-tag tag-red">⚠️ ${c.diasAte}d</span>`;
       extraClass = 'conta-urgente';
-    } else if (c.diasAte <= 7) {
+    } else if (c.diasAte <= diasAviso) {
       badge = `<span class="status-tag tag-yellow">⏰ ${c.diasAte} dias</span>`;
       extraClass = 'conta-proximo';
     } else {
@@ -2340,7 +2644,11 @@ function renderRules() {
   document.getElementById('rules-list').innerHTML = d.rules.map((r, i) => `
     <div class="rule-item ${r.checked ? 'checked' : 'unchecked'}" onclick="toggleRule(${i})">
       <div class="rule-check">${r.checked ? '✓' : '✕'}</div>
-      <div class="rule-text">${r.text}</div>
+      <div class="rule-text">
+        <div>${escapeHtml(r.text)}</div>
+        ${r.excecao ? `<div class="rule-excecao">⚠️ Exceção: ${escapeHtml(r.excecao)}</div>` : ''}
+      </div>
+      <button class="rule-delete" onclick="event.stopPropagation();deleteRule(${i})" title="Excluir regra">✕</button>
     </div>`).join('');
 }
 
@@ -2351,14 +2659,27 @@ function toggleRule(i) {
   renderRules();
 }
 
-function addRule() {
-  const input = document.getElementById('new-rule-text');
-  const text  = input.value.trim();
-  if (!text) return;
+function deleteRule(i) {
+  if (!confirm('Excluir esta regra?')) return;
   const d = getData();
-  d.rules.push({ text, checked: false });
+  d.rules.splice(i, 1);
+  save('rules', d.rules);
+  renderRules();
+}
+
+function addRule() {
+  const input    = document.getElementById('new-rule-text');
+  const excInput = document.getElementById('new-rule-excecao');
+  const text     = input.value.trim();
+  if (!text) { toast('⚠️ Informe a descrição da regra'); return; }
+  const d = getData();
+  const rule = { text, checked: false };
+  const excecao = excInput ? excInput.value.trim() : '';
+  if (excecao) rule.excecao = excecao;
+  d.rules.push(rule);
   save('rules', d.rules);
   input.value = '';
+  if (excInput) excInput.value = '';
   renderRules();
   toast('✓ Regra adicionada!');
 }
@@ -2373,6 +2694,8 @@ function fillUpdateForm() {
   document.getElementById('up-date').value          = d.date || new Date().toISOString().slice(0,10);
   document.getElementById('up-salario').value       = d.salario;
   document.getElementById('up-aporte').value        = d.aporte;
+  const diasEl = document.getElementById('up-dias-aviso');
+  if (diasEl) diasEl.value = d.diasAviso ?? 3;
 }
 
 function salvarValores() {
@@ -2393,10 +2716,12 @@ function salvarValores() {
 }
 
 function salvarConfig() {
-  const salario = parseFloat(document.getElementById('up-salario').value);
-  const aporte  = parseFloat(document.getElementById('up-aporte').value);
+  const salario   = parseFloat(document.getElementById('up-salario').value);
+  const aporte    = parseFloat(document.getElementById('up-aporte').value);
+  const diasAviso = parseInt(document.getElementById('up-dias-aviso')?.value) || 3;
   if (!isNaN(salario)) save('salario', salario);
   if (!isNaN(aporte))  save('aporte', aporte);
+  save('diasAviso', diasAviso);
   renderDashboard();
   toast('✓ Configurações salvas!');
 }
@@ -2404,7 +2729,8 @@ function salvarConfig() {
 function resetarDados() {
   if (!confirm('Isso apagará TODOS os dados desta conta em todos os dispositivos. Confirmar?')) return;
   const prefix   = `opchave_${currentUser}_`;
-  const defaults = currentUser === 'Teste' ? DEFAULTS_TESTE : DEFAULTS;
+  const base     = currentUser === 'Teste' ? DEFAULTS_TESTE : DEFAULTS;
+  const defaults = { ...base, lancamentos: [], diasAviso: 3 };
   Object.keys(localStorage).filter(k => k.startsWith(prefix)).forEach(k => localStorage.removeItem(k));
   Object.assign(appData, JSON.parse(JSON.stringify(defaults)));
   if (window._fbRef) window._fbRef.set(defaults).catch(() => {});
@@ -2414,10 +2740,279 @@ function resetarDados() {
 }
 
 // ─── PRIVACIDADE ──────────────────────────────────────────────────────────────
+const EYE_OPEN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const EYE_CLOSED = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+
 function togglePrivacy() {
   const isPrivate = document.body.classList.toggle('privacy');
-  document.getElementById('privacy-btn').textContent = isPrivate ? '🙈' : '👁️';
   localStorage.setItem('opchave_privacy', isPrivate ? '1' : '0');
+  updateDropdownPrivacy(isPrivate);
+}
+
+function updateDropdownPrivacy(forceState) {
+  const isPrivate = forceState !== undefined ? forceState : document.body.classList.contains('privacy');
+  const iconEl  = document.getElementById('ud-privacy-icon');
+  const labelEl = document.getElementById('ud-privacy-label');
+  if (iconEl)  iconEl.innerHTML  = isPrivate ? EYE_CLOSED : EYE_OPEN;
+  if (labelEl) labelEl.textContent = isPrivate ? 'Mostrar valores' : 'Ocultar valores';
+}
+
+// ─── USER DROPDOWN ────────────────────────────────────────────────────────────
+function toggleUserDropdown() {
+  document.getElementById('user-dropdown').classList.toggle('open');
+}
+function closeUserDropdown() {
+  document.getElementById('user-dropdown').classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('user-dropdown');
+  if (dd && !dd.contains(e.target) && !e.target.closest('#user-menu-btn')) {
+    dd.classList.remove('open');
+  }
+});
+
+// ─── NAVEGAÇÃO ────────────────────────────────────────────────────────────────
+function goHome() {
+  const dashBtn = document.querySelector('.nav-btn');
+  if (dashBtn) showTab('dashboard', dashBtn);
+}
+
+// ─── GRÁFICO INVESTIMENTOS DASHBOARD ─────────────────────────────────────────
+let invDashMode = 'comparativo';
+
+function switchInvChart(mode) {
+  invDashMode = mode;
+  document.getElementById('inv-tab-comp').classList.toggle('active', mode === 'comparativo');
+  document.getElementById('inv-tab-cdb').classList.toggle('active',  mode === 'cdb');
+  renderInvDashChart();
+}
+
+function renderInvDashChart() {
+  if (invDashMode === 'cdb') {
+    renderChart('chart-inv-dash');
+  } else {
+    renderInvComparativoChart();
+  }
+}
+
+function renderInvComparativoChart() {
+  const canvasId = 'chart-inv-dash';
+  if (chartInstances[canvasId]) { chartInstances[canvasId].destroy(); delete chartInstances[canvasId]; }
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const d = getData();
+  const hist = d.historico.slice().sort((a, b) => a.mes.localeCompare(b.mes));
+
+  if (hist.length === 0) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#555';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sem histórico. Adicione registros mensais.', canvas.width / 2, 120);
+    return;
+  }
+
+  chartInstances[canvasId] = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: hist.map(r => fmtMonth(r.mes)),
+      datasets: [
+        { label: 'CDB',  data: hist.map(r => r.cdb  || 0), backgroundColor: 'rgba(34,197,94,0.75)',  borderColor: '#22c55e', borderWidth: 1, borderRadius: 3, stack: 'total' },
+        { label: 'Ouro', data: hist.map(r => r.ouro || 0), backgroundColor: 'rgba(255,107,0,0.75)',  borderColor: '#FF6B00', borderWidth: 1, borderRadius: 3, stack: 'total' },
+        { label: 'Multi',data: hist.map(r => r.multi|| 0), backgroundColor: 'rgba(168,85,247,0.75)', borderColor: '#a855f7', borderWidth: 1, borderRadius: 3, stack: 'total' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', align: 'start', labels: { color: '#888', font: { size: 11, weight: '600' }, boxWidth: 12, boxHeight: 12, padding: 14 } },
+        tooltip: {
+          backgroundColor: '#1E1E1E', borderColor: '#2A2A2A', borderWidth: 1, titleColor: '#F0F0F0', bodyColor: '#888', padding: 10,
+          callbacks: {
+            label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y),
+            footer: items => 'Total: ' + fmt(items.reduce((s, i) => s + i.parsed.y, 0))
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 } }, border: { color: 'transparent' }, stacked: true },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => v >= 1000 ? 'R$' + (v/1000).toFixed(1) + 'k' : 'R$' + v }, border: { color: 'transparent' }, beginAtZero: true, stacked: true }
+      }
+    }
+  });
+}
+
+// ─── MODAL NOVO LANÇAMENTO ────────────────────────────────────────────────────
+let tipoAtual = 'saida';
+
+function showAddModal() {
+  tipoAtual = 'saida';
+  selectTipo('saida');
+  document.getElementById('lanc-desc').value = '';
+  document.getElementById('lanc-valor').value = '';
+  document.getElementById('lanc-data').value = new Date().toISOString().slice(0,10);
+  document.getElementById('lanc-aporte-valor').value = '';
+  document.getElementById('lanc-aporte-data').value = new Date().toISOString().slice(0,10);
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function closeAddModal() {
+  document.getElementById('add-modal').classList.remove('open');
+}
+
+function selectTipo(tipo) {
+  tipoAtual = tipo;
+  ['saida','entrada','aporte'].forEach(t => {
+    document.getElementById('tipo-' + t).className = 'tipo-btn' + (t === tipo ? ' sel-' + t : '');
+  });
+  const comum  = document.getElementById('lanc-form-comum');
+  const aporte = document.getElementById('lanc-form-aporte');
+  const catSaida   = document.getElementById('lanc-cat-group');
+  const catEntrada = document.getElementById('lanc-receita-group');
+
+  if (tipo === 'aporte') {
+    comum.style.display  = 'none';
+    aporte.style.display = 'block';
+  } else {
+    comum.style.display  = 'block';
+    aporte.style.display = 'none';
+    catSaida.style.display   = tipo === 'saida'   ? 'block' : 'none';
+    catEntrada.style.display = tipo === 'entrada' ? 'block' : 'none';
+  }
+
+  const btn = document.getElementById('lanc-submit-btn');
+  if (btn) {
+    btn.className = 'btn' + (tipo === 'saida' ? ' btn-danger' : tipo === 'entrada' ? ' btn-green' : '');
+    btn.textContent = tipo === 'saida' ? '− Registrar Saída' : tipo === 'entrada' ? '+ Registrar Entrada' : '📈 Registrar Aporte';
+  }
+}
+
+async function addLancamento() {
+  const d = getData();
+
+  if (tipoAtual === 'aporte') {
+    const inv   = document.getElementById('lanc-inv').value;
+    const valor = parseFloat(document.getElementById('lanc-aporte-valor').value);
+    const data  = document.getElementById('lanc-aporte-data').value;
+    if (isNaN(valor) || valor <= 0) { toast('⚠️ Informe o valor do aporte'); return; }
+    if (!data) { toast('⚠️ Informe a data'); return; }
+
+    const novoVal = (d[inv] || 0) + valor;
+    save(inv, novoVal);
+    save('investidoMes', (d.investidoMes || 0) + valor);
+
+    const lancamentos = d.lancamentos || [];
+    lancamentos.push({ id: Date.now(), tipo: 'aporte', inv, valor, data, mes: data.slice(0,7) });
+    save('lancamentos', lancamentos);
+    save('date', data);
+
+    closeAddModal();
+    renderDashboard();
+    fillUpdateForm();
+    toast('📈 Aporte registrado em ' + inv.toUpperCase() + '!');
+    return;
+  }
+
+  const desc  = document.getElementById('lanc-desc').value.trim();
+  const valor = parseFloat(document.getElementById('lanc-valor').value);
+  const data  = document.getElementById('lanc-data').value;
+
+  if (!desc)                     { toast('⚠️ Informe a descrição'); return; }
+  if (isNaN(valor) || valor <= 0) { toast('⚠️ Informe o valor'); return; }
+  if (!data)                     { toast('⚠️ Informe a data'); return; }
+
+  if (tipoAtual === 'saida') {
+    const cat = document.getElementById('lanc-cat').value;
+    d.gastos.push({ id: Date.now(), descricao: desc, valor, categoria: cat, data, mes: data.slice(0,7) });
+    save('gastos', d.gastos);
+    closeAddModal();
+    renderGastos();
+    renderDashboard();
+    toast('− Saída registrada!');
+  } else {
+    const cat = document.getElementById('lanc-receita-cat').value;
+    const lancamentos = d.lancamentos || [];
+    lancamentos.push({ id: Date.now(), tipo: 'entrada', categoria: cat, descricao: desc, valor, data, mes: data.slice(0,7) });
+    save('lancamentos', lancamentos);
+    closeAddModal();
+    renderDashboard();
+    toast('+ Entrada registrada!');
+  }
+}
+
+// ─── CADASTRO DE NOVO USUÁRIO ─────────────────────────────────────────────────
+function showRegister() {
+  document.getElementById('reg-name').value    = '';
+  document.getElementById('reg-email').value   = '';
+  document.getElementById('reg-username').value= '';
+  document.getElementById('reg-password').value= '';
+  document.getElementById('reg-confirm').value = '';
+  document.getElementById('reg-error').textContent = '';
+  const panel = document.getElementById('register-panel');
+  panel.style.display = 'flex';
+  setTimeout(() => document.getElementById('reg-name').focus(), 100);
+}
+
+function closeRegister() {
+  document.getElementById('register-panel').style.display = 'none';
+}
+
+async function doRegister() {
+  const name     = document.getElementById('reg-name').value.trim();
+  const email    = document.getElementById('reg-email').value.trim().toLowerCase();
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm  = document.getElementById('reg-confirm').value;
+  const errEl    = document.getElementById('reg-error');
+
+  const showErr = (msg) => {
+    errEl.textContent = msg;
+    errEl.style.color = 'var(--red)';
+  };
+
+  if (!name)     { showErr('⚠️ Informe seu nome'); return; }
+  if (!email || !email.includes('@')) { showErr('⚠️ Informe um e-mail válido'); return; }
+  if (!username) { showErr('⚠️ Informe um nome de usuário'); return; }
+  if (/\s/.test(username)) { showErr('⚠️ Usuário não pode ter espaços'); return; }
+  if (password.length < 4)  { showErr('⚠️ Senha deve ter no mínimo 4 caracteres'); return; }
+  if (password !== confirm)  { showErr('❌ Senhas não coincidem'); return; }
+
+  const userKey = username.toLowerCase();
+  if (CREDS.hasOwnProperty(username) || userKey === 'dalpim' || userKey === 'teste') {
+    showErr('❌ Nome de usuário reservado'); return;
+  }
+
+  errEl.style.color = 'var(--text2)';
+  errEl.textContent = '⏳ Criando conta...';
+
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    const db = firebase.database();
+    const snap = await db.ref('accounts/' + userKey).once('value');
+    if (snap.exists()) { showErr('❌ Usuário já cadastrado'); return; }
+
+    const hash = await sha256(password);
+    await db.ref('accounts/' + userKey).set({ name, email, passwordHash: hash, createdAt: Date.now() });
+
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✓ Conta criada! Entrando...';
+
+    // Registra dinamicamente
+    DYNAMIC_USERS[userKey] = { label: name, email, chipClass: 'user-chip user-chip-personal', icon: '👤' };
+
+    setTimeout(() => {
+      closeRegister();
+      loginAs(userKey, { label: name, chipClass: 'user-chip user-chip-personal', icon: '👤' });
+    }, 1000);
+
+  } catch (e) {
+    console.error('[Register]', e);
+    showErr('❌ Erro ao criar conta. Tente novamente.');
+  }
 }
 
 // ─── UTILIDADE ────────────────────────────────────────────────────────────────
@@ -2432,8 +3027,8 @@ const FB_CONFIG = {
   projectId:   'projeto-app-money',
 };
 function setSyncStatus(icon, label, color) {
-  const el = document.getElementById('sync-status');
-  if (el) el.innerHTML = `<span style="color:${color}">${icon}</span> <span style="color:${color}">${label}</span>`;
+  const udEl = document.getElementById('ud-sync-status');
+  if (udEl) udEl.innerHTML = `<span style="color:${color}">${icon} ${label}</span>`;
 }
 
 function renderAll() {
@@ -2446,6 +3041,7 @@ function renderAll() {
     renderChart('chart-cdb'); renderComparativeChart();
   }
   if (document.getElementById('tab-metas').classList.contains('active')) renderMetasDetail();
+  // O gráfico do dashboard é chamado dentro de renderDashboard → renderInvDashChart
 }
 
 function initFirebase() {
@@ -2509,6 +3105,9 @@ const USER_EMAILS = {
   Teste:  'teste@operacaochave.com',
 };
 
+// Usuários cadastrados dinamicamente (não hardcoded)
+const DYNAMIC_USERS = {};
+
 function togglePwVis(inputId, btn) {
   const inp = document.getElementById(inputId);
   const svg = btn.querySelector('svg');
@@ -2534,7 +3133,7 @@ function closeForgot() {
   document.getElementById('recovery-panel').classList.remove('open');
 }
 
-function checkRecoveryEmail() {
+async function checkRecoveryEmail() {
   const email = (document.getElementById('rec-email').value || '').trim().toLowerCase();
   const msgEl = document.getElementById('rec-email-msg');
 
@@ -2544,22 +3143,44 @@ function checkRecoveryEmail() {
     return;
   }
 
+  // Verifica usuários hardcoded primeiro
   const match = Object.entries(USER_EMAILS).find(([, e]) => e.toLowerCase() === email);
-  if (!match) {
-    msgEl.style.color = 'var(--red)';
-    msgEl.textContent = '❌ E-mail não encontrado';
-    const inp = document.getElementById('rec-email');
-    inp.style.borderColor = 'var(--red)';
-    inp.classList.add('shake');
-    setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+  if (match) {
+    msgEl.style.color = 'var(--green)';
+    msgEl.textContent = '✓ E-mail verificado! Crie uma nova senha.';
+    document.getElementById('rec-target-user').value = match[0];
+    document.getElementById('rec-newpass-section').style.display = 'block';
+    setTimeout(() => document.getElementById('rec-newpass').focus(), 100);
     return;
   }
 
-  msgEl.style.color = 'var(--green)';
-  msgEl.textContent = '✓ E-mail verificado! Crie uma nova senha.';
-  document.getElementById('rec-target-user').value = match[0];
-  document.getElementById('rec-newpass-section').style.display = 'block';
-  setTimeout(() => document.getElementById('rec-newpass').focus(), 100);
+  // Verifica usuários cadastrados no Firebase
+  msgEl.style.color = 'var(--text2)';
+  msgEl.textContent = '⏳ Verificando...';
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    const db = firebase.database();
+    const snap = await db.ref('accounts').orderByChild('email').equalTo(email).once('value');
+    if (snap.exists()) {
+      const entries = Object.entries(snap.val());
+      const [userKey] = entries[0];
+      msgEl.style.color = 'var(--green)';
+      msgEl.textContent = '✓ E-mail verificado! Crie uma nova senha.';
+      document.getElementById('rec-target-user').value = userKey;
+      document.getElementById('rec-newpass-section').style.display = 'block';
+      setTimeout(() => document.getElementById('rec-newpass').focus(), 100);
+    } else {
+      msgEl.style.color = 'var(--red)';
+      msgEl.textContent = '❌ E-mail não encontrado';
+      const inp = document.getElementById('rec-email');
+      inp.style.borderColor = 'var(--red)';
+      inp.classList.add('shake');
+      setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+    }
+  } catch {
+    msgEl.style.color = 'var(--red)';
+    msgEl.textContent = '❌ Erro de conexão';
+  }
 }
 
 async function doResetPassword() {
@@ -2579,7 +3200,18 @@ async function doResetPassword() {
   }
 
   const hash = await sha256(newpw);
-  localStorage.setItem(`opchave_pwreset_${user}`, hash);
+
+  // Salva localmente (hardcoded users) ou no Firebase (cadastrados)
+  if (CREDS.hasOwnProperty(user)) {
+    localStorage.setItem(`opchave_pwreset_${user}`, hash);
+  } else {
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+      await firebase.database().ref('accounts/' + user + '/passwordHash').set(hash);
+    } catch {
+      localStorage.setItem(`opchave_pwreset_${user}`, hash);
+    }
+  }
 
   msgEl.style.color = 'var(--green)';
   msgEl.textContent = '✓ Senha redefinida com sucesso!';
@@ -2611,29 +3243,63 @@ async function doLogin() {
   if (!userRaw) { errEl.textContent = '⚠️ Digite o usuário'; document.getElementById('login-username').focus(); return; }
   if (!pwd)     { errEl.textContent = '⚠️ Digite a senha';   document.getElementById('login-password').focus();  return; }
 
+  const hash = await sha256(pwd);
+
+  // 1. Tenta usuários hardcoded (Dalpim, Teste)
   const key = Object.keys(CREDS).find(k => k.toLowerCase() === userRaw.toLowerCase());
-  if (!key) {
-    errEl.textContent = '❌ Usuário não encontrado';
-    const inp = document.getElementById('login-username');
-    inp.style.borderColor = 'var(--red)';
-    inp.classList.add('shake');
-    setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
-    inp.focus();
+  if (key) {
+    const customHash = localStorage.getItem(`opchave_pwreset_${key}`);
+    if (hash === (customHash || CREDS[key])) {
+      loginAs(key);
+    } else {
+      errEl.textContent = '❌ Senha incorreta';
+      const inp = document.getElementById('login-password');
+      inp.value = '';
+      inp.style.borderColor = 'var(--red)';
+      inp.classList.add('shake');
+      setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+      inp.focus();
+    }
     return;
   }
 
-  const hash = await sha256(pwd);
-  const customHash = localStorage.getItem(`opchave_pwreset_${key}`);
-  if (hash === (customHash || CREDS[key])) {
-    loginAs(key);
-  } else {
-    errEl.textContent = '❌ Senha incorreta';
-    const inp = document.getElementById('login-password');
-    inp.value = '';
-    inp.style.borderColor = 'var(--red)';
-    inp.classList.add('shake');
-    setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
-    inp.focus();
+  // 2. Tenta usuários cadastrados no Firebase
+  errEl.style.color = 'var(--text2)';
+  errEl.textContent = '⏳ Verificando...';
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    const db = firebase.database();
+    const userKey = userRaw.toLowerCase();
+    const snap = await db.ref('accounts/' + userKey).once('value');
+    if (!snap.exists()) {
+      errEl.style.color = 'var(--red)';
+      errEl.textContent = '❌ Usuário não encontrado';
+      const inp = document.getElementById('login-username');
+      inp.style.borderColor = 'var(--red)';
+      inp.classList.add('shake');
+      setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+      inp.focus();
+      return;
+    }
+    const account = snap.val();
+    if (hash !== account.passwordHash) {
+      errEl.style.color = 'var(--red)';
+      errEl.textContent = '❌ Senha incorreta';
+      const inp = document.getElementById('login-password');
+      inp.value = '';
+      inp.style.borderColor = 'var(--red)';
+      inp.classList.add('shake');
+      setTimeout(() => { inp.style.borderColor = ''; inp.classList.remove('shake'); }, 600);
+      inp.focus();
+      return;
+    }
+    errEl.textContent = '';
+    DYNAMIC_USERS[userKey] = { label: account.name, email: account.email, chipClass: 'user-chip user-chip-personal', icon: '👤' };
+    loginAs(userKey, { label: account.name, chipClass: 'user-chip user-chip-personal', icon: '👤' });
+  } catch (e) {
+    console.error('[Login]', e);
+    errEl.style.color = 'var(--red)';
+    errEl.textContent = '❌ Erro de conexão. Tente novamente.';
   }
 }
 
@@ -2652,7 +3318,7 @@ function migrateOldData() {
   if (migrated) keys.forEach(key => localStorage.removeItem('opchave_' + key));
 }
 
-function loginAs(user) {
+function loginAs(user, dynamicInfo) {
   currentUser = user;
   localStorage.setItem('opchave_session', user);
 
@@ -2660,15 +3326,27 @@ function loginAs(user) {
 
   initAppData();
 
-  // Atualiza interface do header
-  const info = USER_INFO[user];
-  const chip = document.getElementById('user-chip');
-  if (chip) chip.innerHTML = `<div class="${info.chipClass}">${info.icon} ${info.label}</div>`;
+  // Resolve informações do usuário
+  const info = dynamicInfo || USER_INFO[user] || DYNAMIC_USERS[user] || { label: user, chipClass: 'user-chip user-chip-personal', icon: '👤' };
+
+  // Atualiza header (user dropdown)
+  const menuName = document.getElementById('user-menu-name');
+  const menuIcon = document.getElementById('user-menu-icon');
+  if (menuName) menuName.textContent = info.label;
+  if (menuIcon) menuIcon.textContent = info.icon;
+
+  // Atualiza dropdown header
+  const udName = document.getElementById('ud-user-name');
+  if (udName) udName.textContent = `${info.icon} ${info.label}`;
+
+  // Atualiza label de logout (aba Atualizar)
   const logoutLabel = document.getElementById('logout-user-label');
   if (logoutLabel) logoutLabel.textContent = `${info.icon} ${info.label}`;
 
-  // Esconde login, mostra app
+  // Esconde login, mostra app e FAB
   document.getElementById('login-screen').style.display = 'none';
+  const fab = document.getElementById('fab-btn');
+  if (fab) fab.style.display = 'flex';
 
   // Setup inicial dos formulários
   const hoje = new Date().toISOString().slice(0, 10);
@@ -2681,17 +3359,17 @@ function loginAs(user) {
   document.getElementById('apos-aporte').value = d.aporte;
 
   // Modo privacidade
-  if (localStorage.getItem('opchave_privacy') === '1') {
+  const isPrivate = localStorage.getItem('opchave_privacy') === '1';
+  if (isPrivate) {
     document.body.classList.add('privacy');
-    document.getElementById('privacy-btn').textContent = '🙈';
   } else {
     document.body.classList.remove('privacy');
-    document.getElementById('privacy-btn').textContent = '👁️';
   }
+  updateDropdownPrivacy(isPrivate);
 
   fillUpdateForm();
   renderAll();
-  setTimeout(() => renderChart('chart-cdb-dash'), 150);
+  setTimeout(() => renderInvDashChart(), 150);
 
   // Firebase em background
   initFirebase();
@@ -2699,25 +3377,36 @@ function loginAs(user) {
 
 function logout() {
   if (!confirm('Sair da conta?')) return;
+  closeUserDropdown();
   if (window._fbRef) { window._fbRef.off(); window._fbRef = null; }
   if (window._fbDB)  { window._fbDB.ref('.info/connected').off(); window._fbDB = null; }
   currentUser = null;
   appData = {};
   localStorage.removeItem('opchave_session');
   setSyncStatus('⏳', '', '#888');
-  document.getElementById('user-chip').innerHTML = '';
-  const unEl = document.getElementById('login-username');
-  const pwEl = document.getElementById('login-password');
+
+  // Esconde FAB
+  const fab = document.getElementById('fab-btn');
+  if (fab) fab.style.display = 'none';
+
+  // Limpa header
+  const menuName = document.getElementById('user-menu-name');
+  if (menuName) menuName.textContent = '—';
+  const udName = document.getElementById('ud-user-name');
+  if (udName) udName.textContent = '—';
+
+  const unEl  = document.getElementById('login-username');
+  const pwEl  = document.getElementById('login-password');
   const errEl = document.getElementById('login-error');
-  if (unEl) unEl.value = '';
-  if (pwEl) pwEl.value = '';
+  if (unEl)  unEl.value = '';
+  if (pwEl)  pwEl.value = '';
   if (errEl) errEl.textContent = '';
   document.getElementById('login-screen').style.display = 'flex';
   setTimeout(() => { if (unEl) unEl.focus(); }, 200);
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-(function init() {
+(async function init() {
   // Restaura tema salvo
   const savedTheme = localStorage.getItem('opchave_theme') || '';
   if (savedTheme) {
@@ -2725,13 +3414,34 @@ function logout() {
   }
 
   const session = localStorage.getItem('opchave_session');
-  if (session === 'Dalpim' || session === 'Teste') {
-    loginAs(session);
-  } else {
+  if (!session) {
     setTimeout(() => {
       const unEl = document.getElementById('login-username');
       if (unEl) unEl.focus();
     }, 200);
+    return;
+  }
+
+  if (CREDS.hasOwnProperty(session)) {
+    loginAs(session);
+    return;
+  }
+
+  // Usuário cadastrado: busca info no Firebase antes de logar
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    const snap = await firebase.database().ref('accounts/' + session.toLowerCase()).once('value');
+    if (snap.exists()) {
+      const acc = snap.val();
+      DYNAMIC_USERS[session.toLowerCase()] = { label: acc.name, email: acc.email, chipClass: 'user-chip user-chip-personal', icon: '👤' };
+      loginAs(session.toLowerCase(), { label: acc.name, chipClass: 'user-chip user-chip-personal', icon: '👤' });
+    } else {
+      localStorage.removeItem('opchave_session');
+      setTimeout(() => { const u = document.getElementById('login-username'); if (u) u.focus(); }, 200);
+    }
+  } catch {
+    // Offline: usa dados locais sem verificar Firebase
+    loginAs(session.toLowerCase(), { label: session, chipClass: 'user-chip user-chip-personal', icon: '👤' });
   }
 })();
 </script>
