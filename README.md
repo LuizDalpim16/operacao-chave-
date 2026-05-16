@@ -1,4 +1,4 @@
-# 🔑 Operação Chave
+# 🔑 KeyCash
 
 Painel financeiro pessoal para controle de investimentos, metas, gastos e vencimentos.
 Desenvolvido como aplicativo web único (single-page), sem dependências de servidor.
@@ -77,6 +77,23 @@ Conta pública com dados de exemplo para explorar todas as funcionalidades do ap
 | 6 | **✅ Regras** | Checklist de disciplina financeira personalizada |
 | 7 | **👁️ Privacidade** | Botão para borrar todos os valores monetários |
 | 8 | **☁️ Sincronização** | Firebase Realtime Database — dados sincronizados entre dispositivos |
+| 9 | **👥 Multiusuário** | Suporte a múltiplas contas com dados isolados por usuário |
+| 10 | **🎨 Temas** | 8 temas visuais: Escuro, Claro, Oceano, Floresta, Roxo, Rosa, Rubi e Grafite |
+
+---
+
+## 🎨 Temas disponíveis
+
+| Tema | Estilo |
+|------|--------|
+| **Escuro** | Padrão — fundo preto, destaque laranja |
+| **Claro** | Modo dia — fundo claro, destaque laranja |
+| **Oceano** | Fundo azul-marinho, destaque ciano |
+| **Floresta** | Fundo verde escuro, destaque verde |
+| **Roxo** | Fundo roxo escuro, destaque violeta |
+| **Rosa** | Fundo rosa escuro, destaque pink |
+| **Rubi** | Fundo vermelho escuro, destaque vermelho |
+| **Grafite** | Fundo cinza azulado, destaque laranja |
 
 ---
 
@@ -97,4 +114,15 @@ Conta pública com dados de exemplo para explorar todas as funcionalidades do ap
 
 ---
 
-*Desenvolvido por Luiz Dalpim · 2025*
+## 📋 Histórico de atualizações
+
+| Versão | Data | Descrição |
+|--------|------|-----------|
+| **v3.0** | Mai/2026 | Rebrand para **KeyCash**, correção do seletor de temas, tema Grafite, aparência colapsável no dropdown |
+| **v2.0** | Mai/2026 | Multiusuário, FAB lançamentos, gráfico investimentos, avisos configuráveis, regras com exceção |
+| **v1.5** | Mai/2026 | Novo design do login, recuperação de senha |
+| **v1.0** | 2025 | Temas, menu hambúrguer, login único |
+
+---
+
+*Desenvolvido por Luiz Dalpim · 2026*
