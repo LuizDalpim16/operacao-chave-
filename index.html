@@ -270,11 +270,14 @@
   .card-sm { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  @media (max-width: 600px) {
-    .grid-2 { grid-template-columns: 1fr; }
+  .grid-2 > *, .grid-3 > * { min-width: 0; }
+  @media (max-width: 899px) {
     .grid-3 { grid-template-columns: 1fr 1fr; }
   }
-  @media (max-width: 400px) { .grid-3 { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+  }
   .gap-stack > * + * { margin-top: 12px; }
 
   /* PATRIMÔNIO */
@@ -315,7 +318,8 @@
     transition: all 0.18s;
   }
   .inv-add-btn:hover { background: rgba(255,255,255,0.16); color: var(--text); }
-  .inv-mini-chart-wrap { margin-top: 4px; height: 36px; }
+  .inv-mini-chart-wrap { margin-top: 4px; height: 36px; width: 100%; overflow: hidden; }
+  .inv-mini-chart-wrap canvas { display: block; max-width: 100%; }
   .inv-icon { font-size: 22px; }
   .inv-label { font-size: 11px; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .inv-value { font-size: 22px; font-weight: 800; }
@@ -993,7 +997,7 @@
 <div id="nav-overlay" class="nav-overlay" onclick="toggleMenu()"></div>
 <nav id="main-nav">
   <div class="nav-drawer-hd">
-    <span class="nav-drawer-title">🔑 Operação <span style="color:var(--accent)">Chave</span></span>
+    <span class="nav-drawer-title">🔑 Key<span style="color:var(--accent)">Cash</span></span>
     <button class="nav-close-btn" onclick="toggleMenu()" title="Fechar menu">✕</button>
   </div>
   <button class="nav-btn active" onclick="showTab('dashboard',this)">📊 Painel</button>
