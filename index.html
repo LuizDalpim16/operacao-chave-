@@ -948,6 +948,12 @@
     </div>
     <div class="input-wrap">
       <span class="input-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </span>
+      <input type="email" id="reg-email-confirm" class="form-input" placeholder="Confirmar e-mail" autocomplete="email">
+    </div>
+    <div class="input-wrap">
+      <span class="input-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </span>
       <input type="text" id="reg-username" class="form-input" placeholder="Nome de usuário (sem espaços)" autocomplete="username">
@@ -1157,14 +1163,7 @@
         <span class="budget-label">💰 Salário</span>
         <span class="budget-value val-green" id="bud-salario">R$ 3.000,00</span>
       </div>
-      <div class="budget-row">
-        <span class="budget-label">🚗 Financiamento carro</span>
-        <span class="budget-value val-red">− R$ 1.200,00</span>
-      </div>
-      <div class="budget-row">
-        <span class="budget-label">🏠 Consórcio</span>
-        <span class="budget-value val-red">− R$ 196,00</span>
-      </div>
+      <div id="budget-fixos-rows"></div>
       <div class="budget-row">
         <span class="budget-label">📦 Aporte planejado</span>
         <span class="budget-value val-accent" id="bud-aporte-plan">− R$ 500,00</span>
@@ -1256,20 +1255,7 @@
 
     <div class="section-title"><span>⚡</span> Avisos</div>
     <div class="gap-stack" id="avisos-vencimentos-dash" style="margin-bottom:12px"></div>
-    <div class="gap-stack">
-      <div class="moto-card">
-        <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:6px">🏍️ Moto R15 2024 — Venda Pendente</div>
-        <div style="font-size:13px;color:var(--text2)">Valor esperado: <strong style="color:var(--text)">R$ 21.000</strong> · Usar para amortizar o financiamento do carro</div>
-      </div>
-      <div class="alert alert-accent">
-        <span>⚠️</span>
-        <span><strong>Consórcio:</strong> Avaliar cancelamento. R$ 196/mês que poderiam ir para o CDB.</span>
-      </div>
-      <div class="alert alert-info">
-        <span>📅</span>
-        <span><strong>Lembrete:</strong> Investir todo dia <strong>10</strong> de cada mês.</span>
-      </div>
-    </div>
+    <div class="gap-stack" id="avisos-user-dash"></div>
   </div>
 
   <!-- METAS -->
@@ -1605,6 +1591,52 @@
     </div>
 
     <hr class="divider">
+    <div class="section-title"><span>🔒</span> Gastos Fixos Mensais</div>
+    <div class="card" style="margin-bottom:16px">
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Despesas fixas deduzidas do orçamento mensal disponível (ex: financiamento, consórcio).</p>
+      <div id="gastos-fixos-list"></div>
+      <hr class="ud-divider" style="margin:12px 0">
+      <div class="grid-2" style="margin-bottom:8px">
+        <input class="form-input" id="new-fixo-nome" type="text" placeholder="Nome (ex: Financiamento)">
+        <input class="form-input" id="new-fixo-valor" type="number" step="0.01" placeholder="Valor (R$)" min="0">
+      </div>
+      <button class="btn btn-sm" onclick="addGastoFixo()" style="width:auto">+ Adicionar gasto fixo</button>
+    </div>
+
+    <hr class="divider">
+    <div class="section-title"><span>⚡</span> Avisos Personalizados</div>
+    <div class="card" style="margin-bottom:16px">
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Avisos exibidos no painel principal. Você pode adicionar lembretes, alertas e destaques.</p>
+      <div id="avisos-config-list"></div>
+      <hr class="ud-divider" style="margin:12px 0">
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label">Tipo de aviso</label>
+        <select class="form-input" id="new-aviso-tipo" onchange="toggleAvisoTituloField()">
+          <option value="info">📅 Informativo</option>
+          <option value="accent">⚠️ Atenção</option>
+          <option value="card">🔔 Destaque (com título)</option>
+        </select>
+      </div>
+      <div class="form-group" id="new-aviso-titulo-wrap" style="display:none;margin-bottom:8px">
+        <label class="form-label">Título</label>
+        <input class="form-input" id="new-aviso-titulo" type="text" placeholder="Ex: Moto R15 — Venda Pendente">
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label">Texto do aviso</label>
+        <input class="form-input" id="new-aviso-texto" type="text" placeholder="Ex: Lembrete: Investir todo dia 10">
+      </div>
+      <button class="btn btn-sm" onclick="addAviso()" style="width:auto">+ Adicionar aviso</button>
+    </div>
+
+    <hr class="divider">
+    <div class="section-title"><span>🎯</span> Editar Metas Financeiras</div>
+    <div class="card" style="margin-bottom:16px">
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Personalize o nome e o valor alvo de cada meta. O campo de investimento (CDB/Total) não muda.</p>
+      <div id="metas-config-list"></div>
+      <button class="btn btn-sm btn-green" onclick="salvarMetasConfig()" style="width:auto;margin-top:12px">💾 Salvar Metas</button>
+    </div>
+
+    <hr class="divider">
     <div class="section-title"><span>🏷️</span> Categorias</div>
     <div class="card" style="margin-bottom:16px">
       <div style="display:flex;gap:8px;margin-bottom:12px">
@@ -1928,6 +1960,15 @@ const DEFAULTS = {
   gastos: [],
   contas: [],
   metasOrder: [0, 1, 2, 3],
+  gastosFixos: [
+    { id: 1, nome: '🚗 Financiamento carro', valor: 1200 },
+    { id: 2, nome: '🏠 Consórcio', valor: 196 },
+  ],
+  avisos: [
+    { id: 1, tipo: 'card', titulo: '🏍️ Moto R15 2024 — Venda Pendente', texto: 'Valor esperado: R$ 21.000 · Usar para amortizar o financiamento do carro' },
+    { id: 2, tipo: 'accent', texto: 'Consórcio: Avaliar cancelamento. R$ 196/mês que poderiam ir para o CDB.' },
+    { id: 3, tipo: 'info', texto: 'Lembrete: Investir todo dia 10 de cada mês.' },
+  ],
 };
 
 // ─── DEFAULTS USUÁRIO TESTE ───────────────────────────────────────────────────
@@ -1965,6 +2006,8 @@ const DEFAULTS_TESTE = {
     { text: 'Revisar gastos toda semana',    checked: false },
   ],
   metasOrder: [0, 1, 2, 3],
+  gastosFixos: [],
+  avisos: [],
 };
 
 // ─── STORAGE ──────────────────────────────────────────────────────────────────
@@ -1987,7 +2030,14 @@ function getData() { return appData; }
 function initAppData() {
   const isHardcoded = CREDS.hasOwnProperty(currentUser);
   const D = currentUser === 'Teste' ? DEFAULTS_TESTE : DEFAULTS;
-  const defBase = isHardcoded ? D : { ...DEFAULTS, rules: [], gastos: [], contas: [], historico: [] };
+  const defBase = isHardcoded ? D : {
+    cdb: 0, ouro: 0, multi: 0,
+    date: new Date().toISOString().slice(0, 10),
+    salario: 3000, aporte: 500, investidoMes: 0,
+    historico: [], rules: [], gastos: [], contas: [],
+    metasOrder: [0, 1, 2, 3], diasAviso: 3,
+    gastosFixos: [], avisos: [],
+  };
   appData = {
     cdb:          load('cdb')          ?? defBase.cdb,
     ouro:         load('ouro')         ?? defBase.ouro,
@@ -2006,6 +2056,9 @@ function initAppData() {
     categorias:   load('categorias')   ?? { saida: JSON.parse(JSON.stringify(DEFAULT_CATS_SAIDA)), entrada: JSON.parse(JSON.stringify(DEFAULT_CATS_ENTRADA)) },
     recorrencias: load('recorrencias') ?? [],
     orcamentos:   load('orcamentos')   ?? {},
+    gastosFixos:  load('gastosFixos')  ?? defBase.gastosFixos ?? [],
+    avisos:       load('avisos')       ?? defBase.avisos ?? [],
+    metasCustom:  load('metasCustom')  ?? null,
   };
 }
 
@@ -2156,10 +2209,21 @@ function renderDashboard() {
   const mesAtual = d.historico.find(r => r.mes === ym);
   const investido = mesAtual ? (mesAtual.aporte || 0) : d.investidoMes;
 
-  const fixos = 1200 + 196;
-  const pctComp = ((fixos / d.salario) * 100).toFixed(1);
-  const pctAporte = ((d.aporte / d.salario) * 100).toFixed(1);
+  const gastosFixos = d.gastosFixos || [];
+  const fixos = gastosFixos.reduce((s, f) => s + (f.valor || 0), 0);
+  const pctComp = d.salario > 0 ? ((fixos / d.salario) * 100).toFixed(1) : '0.0';
+  const pctAporte = d.salario > 0 ? ((d.aporte / d.salario) * 100).toFixed(1) : '0.0';
   const disponivel = d.salario - fixos - d.aporte;
+
+  const fixosRowsEl = document.getElementById('budget-fixos-rows');
+  if (fixosRowsEl) {
+    fixosRowsEl.innerHTML = gastosFixos.map(f =>
+      `<div class="budget-row">
+        <span class="budget-label">${escapeHtml(f.nome)}</span>
+        <span class="budget-value val-red">− ${fmt(f.valor)}</span>
+      </div>`
+    ).join('');
+  }
 
   document.getElementById('bud-salario').textContent      = fmt(d.salario);
   document.getElementById('bud-aporte-plan').textContent  = '− ' + fmt(d.aporte);
@@ -2183,16 +2247,23 @@ function renderDashboard() {
     pill.textContent = 'Parcial'; pill.className = 'aporte-pill pill-yellow';
   }
 
-  setBar('bar-res1',  'pct-res1',  d.cdb, 3000);
-  setBar('bar-res2',  'pct-res2',  d.cdb, 5000);
-  setBar('bar-casa1', 'pct-casa1', d.cdb, 10000);
-  setBar('bar-casa2', 'pct-casa2', total, 50000);
+  const mc = d.metasCustom;
+  const mMeta = [
+    mc ? mc[0].meta : 3000,
+    mc ? mc[1].meta : 5000,
+    mc ? mc[2].meta : 10000,
+    mc ? mc[3].meta : 50000,
+  ];
+  setBar('bar-res1',  'pct-res1',  d.cdb, mMeta[0]);
+  setBar('bar-res2',  'pct-res2',  d.cdb, mMeta[1]);
+  setBar('bar-casa1', 'pct-casa1', d.cdb, mMeta[2]);
+  setBar('bar-casa2', 'pct-casa2', total, mMeta[3]);
 
   const faltas = [
-    Math.max(0, 3000  - d.cdb),
-    Math.max(0, 5000  - d.cdb),
-    Math.max(0, 10000 - d.cdb),
-    Math.max(0, 50000 - total),
+    Math.max(0, mMeta[0] - d.cdb),
+    Math.max(0, mMeta[1] - d.cdb),
+    Math.max(0, mMeta[2] - d.cdb),
+    Math.max(0, mMeta[3] - total),
   ];
   ['res1','res2','casa1','casa2'].forEach((id, i) => {
     document.getElementById('falta-' + id).textContent = faltas[i] <= 0 ? '✓ Meta atingida' : 'Falta ' + fmt(faltas[i]);
@@ -2224,6 +2295,25 @@ function renderDashboard() {
       avisosEl.innerHTML = '';
       avisosEl.style.display = 'none';
     }
+  }
+
+  // Avisos personalizados do usuário
+  const avisosUserEl = document.getElementById('avisos-user-dash');
+  if (avisosUserEl) {
+    const userAvisos = d.avisos || [];
+    avisosUserEl.innerHTML = userAvisos.map(a => {
+      if (a.tipo === 'card') {
+        return `<div class="moto-card">
+          <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:6px">${escapeHtml(a.titulo || '')}</div>
+          <div style="font-size:13px;color:var(--text2)">${escapeHtml(a.texto || '')}</div>
+        </div>`;
+      } else if (a.tipo === 'accent') {
+        return `<div class="alert alert-accent"><span>⚠️</span><span>${escapeHtml(a.texto || '')}</span></div>`;
+      } else {
+        return `<div class="alert alert-info"><span>📅</span><span>${escapeHtml(a.texto || '')}</span></div>`;
+      }
+    }).join('');
+    avisosUserEl.style.display = userAvisos.length > 0 ? '' : 'none';
   }
 
   renderResumoMes();
@@ -2364,11 +2454,18 @@ function renderMetasDetail() {
   const total = d.cdb + d.ouro + d.multi;
   const order = d.metasOrder ?? [0, 1, 2, 3];
 
-  const metas = order.map(i => ({
-    ...METAS_BASE[i],
-    origIdx: i,
-    atual: METAS_BASE[i].key === 'total' ? total : d.cdb,
-  }));
+  const metasCustom = d.metasCustom;
+  const metas = order.map(i => {
+    const base = METAS_BASE[i];
+    const custom = metasCustom ? metasCustom[i] : null;
+    return {
+      ...base,
+      name: custom ? custom.name : base.name,
+      meta: custom ? custom.meta : base.meta,
+      origIdx: i,
+      atual: base.key === 'total' ? total : d.cdb,
+    };
+  });
 
   const dist = calcDistribuicao(metas, d.aporte);
 
@@ -2794,7 +2891,7 @@ function renderGastos() {
   const gastosMes  = (d.gastos || []).filter(g => g.mes === mesFilter);
   const totalGasto = gastosMes.reduce((s, g) => s + g.valor, 0);
 
-  const fixos     = 1200 + 196;
+  const fixos     = (d.gastosFixos || []).reduce((s, f) => s + (f.valor || 0), 0);
   const disponivel = d.salario - fixos - d.aporte;
   const saldo      = disponivel - totalGasto;
   const pctGasto   = disponivel > 0 ? Math.min(100, (totalGasto / disponivel) * 100) : 0;
@@ -3126,6 +3223,9 @@ function fillUpdateForm() {
   renderRecorrencias();
   refreshCatSelects();
   renderOrcamentoCatConfig();
+  renderGastosFixos();
+  renderAvisosConfig();
+  renderMetasConfig();
   updateNotifBtn(localStorage.getItem('opchave_notif') === '1');
 }
 
@@ -3139,6 +3239,133 @@ function salvarConfig() {
   save('diasAviso', diasAviso);
   renderDashboard();
   toast('✓ Configurações salvas!');
+}
+
+// ─── GASTOS FIXOS ─────────────────────────────────────────────────────────────
+function renderGastosFixos() {
+  const d = getData();
+  const list = document.getElementById('gastos-fixos-list');
+  if (!list) return;
+  const fixos = d.gastosFixos || [];
+  if (fixos.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text2);text-align:center;padding:10px 0">Nenhum gasto fixo cadastrado.</div>';
+    return;
+  }
+  list.innerHTML = fixos.map(f =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+      <span style="font-size:13px">${escapeHtml(f.nome)} — <strong>${fmt(f.valor)}</strong></span>
+      <button class="btn btn-sm btn-danger" onclick="removeGastoFixo(${f.id})" style="width:auto;padding:4px 10px;font-size:12px">✕</button>
+    </div>`
+  ).join('');
+}
+
+function addGastoFixo() {
+  const nome  = document.getElementById('new-fixo-nome').value.trim();
+  const valor = parseFloat(document.getElementById('new-fixo-valor').value);
+  if (!nome)             { toast('⚠️ Informe o nome do gasto fixo'); return; }
+  if (!valor || valor <= 0) { toast('⚠️ Informe um valor válido'); return; }
+  const d = getData();
+  const fixos = d.gastosFixos || [];
+  fixos.push({ id: Date.now(), nome, valor });
+  save('gastosFixos', fixos);
+  document.getElementById('new-fixo-nome').value  = '';
+  document.getElementById('new-fixo-valor').value = '';
+  renderGastosFixos();
+  renderDashboard();
+  toast('✓ Gasto fixo adicionado!');
+}
+
+function removeGastoFixo(id) {
+  const d = getData();
+  d.gastosFixos = (d.gastosFixos || []).filter(f => f.id !== id);
+  save('gastosFixos', d.gastosFixos);
+  renderGastosFixos();
+  renderDashboard();
+  toast('✓ Gasto fixo removido!');
+}
+
+// ─── AVISOS PERSONALIZADOS ────────────────────────────────────────────────────
+function toggleAvisoTituloField() {
+  const tipo = document.getElementById('new-aviso-tipo')?.value;
+  const wrap = document.getElementById('new-aviso-titulo-wrap');
+  if (wrap) wrap.style.display = tipo === 'card' ? '' : 'none';
+}
+
+function renderAvisosConfig() {
+  const d = getData();
+  const list = document.getElementById('avisos-config-list');
+  if (!list) return;
+  const avisos = d.avisos || [];
+  if (avisos.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text2);text-align:center;padding:10px 0">Nenhum aviso personalizado.</div>';
+    return;
+  }
+  list.innerHTML = avisos.map(a =>
+    `<div style="display:flex;justify-content:space-between;align-items:flex-start;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;gap:8px">
+      <div style="font-size:13px;flex:1">
+        ${a.tipo === 'card' && a.titulo ? `<strong>${escapeHtml(a.titulo)}</strong><br>` : ''}
+        ${escapeHtml(a.texto || '')}
+        <span style="font-size:11px;color:var(--text2);margin-left:6px">[${a.tipo}]</span>
+      </div>
+      <button class="btn btn-sm btn-danger" onclick="removeAviso(${a.id})" style="width:auto;padding:4px 10px;font-size:12px;flex-shrink:0">✕</button>
+    </div>`
+  ).join('');
+}
+
+function addAviso() {
+  const tipo   = document.getElementById('new-aviso-tipo')?.value || 'info';
+  const titulo = document.getElementById('new-aviso-titulo')?.value.trim() || '';
+  const texto  = document.getElementById('new-aviso-texto')?.value.trim() || '';
+  if (!texto) { toast('⚠️ Informe o texto do aviso'); return; }
+  const d = getData();
+  const avisos = d.avisos || [];
+  const aviso = { id: Date.now(), tipo, texto };
+  if (tipo === 'card' && titulo) aviso.titulo = titulo;
+  avisos.push(aviso);
+  save('avisos', avisos);
+  if (document.getElementById('new-aviso-texto')) document.getElementById('new-aviso-texto').value = '';
+  if (document.getElementById('new-aviso-titulo')) document.getElementById('new-aviso-titulo').value = '';
+  renderAvisosConfig();
+  renderDashboard();
+  toast('✓ Aviso adicionado!');
+}
+
+function removeAviso(id) {
+  const d = getData();
+  d.avisos = (d.avisos || []).filter(a => a.id !== id);
+  save('avisos', d.avisos);
+  renderAvisosConfig();
+  renderDashboard();
+  toast('✓ Aviso removido!');
+}
+
+// ─── METAS CONFIGURÁVEIS ──────────────────────────────────────────────────────
+function renderMetasConfig() {
+  const d = getData();
+  const list = document.getElementById('metas-config-list');
+  if (!list) return;
+  const custom = d.metasCustom || METAS_BASE.map(m => ({ name: m.name, meta: m.meta }));
+  list.innerHTML = custom.map((m, i) =>
+    `<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Meta ${i + 1} · ${METAS_BASE[i].label}</div>
+      <div class="grid-2" style="gap:8px">
+        <input class="form-input" id="meta-nome-${i}" type="text" value="${escapeHtml(m.name)}" placeholder="Nome da meta">
+        <input class="form-input" id="meta-valor-${i}" type="number" value="${m.meta}" placeholder="Valor alvo (R$)" min="1">
+      </div>
+    </div>`
+  ).join('');
+}
+
+function salvarMetasConfig() {
+  const custom = METAS_BASE.map((base, i) => {
+    const name = (document.getElementById(`meta-nome-${i}`)?.value.trim()) || base.name;
+    const meta = parseFloat(document.getElementById(`meta-valor-${i}`)?.value) || base.meta;
+    return { name, meta };
+  });
+  save('metasCustom', custom);
+  renderMetasDetail();
+  renderDashboard();
+  toast('✓ Metas atualizadas!');
 }
 
 function resetarDados() {
@@ -3496,9 +3723,10 @@ async function addLancamento() {
 
 // ─── CADASTRO DE NOVO USUÁRIO ─────────────────────────────────────────────────
 function showRegister() {
-  document.getElementById('reg-name').value    = '';
-  document.getElementById('reg-email').value   = '';
-  document.getElementById('reg-username').value= '';
+  document.getElementById('reg-name').value         = '';
+  document.getElementById('reg-email').value        = '';
+  document.getElementById('reg-email-confirm').value= '';
+  document.getElementById('reg-username').value     = '';
   document.getElementById('reg-password').value= '';
   document.getElementById('reg-confirm').value = '';
   document.getElementById('reg-error').textContent = '';
@@ -3512,12 +3740,13 @@ function closeRegister() {
 }
 
 async function doRegister() {
-  const name     = document.getElementById('reg-name').value.trim();
-  const email    = document.getElementById('reg-email').value.trim().toLowerCase();
-  const username = document.getElementById('reg-username').value.trim();
-  const password = document.getElementById('reg-password').value;
-  const confirm  = document.getElementById('reg-confirm').value;
-  const errEl    = document.getElementById('reg-error');
+  const name         = document.getElementById('reg-name').value.trim();
+  const email        = document.getElementById('reg-email').value.trim().toLowerCase();
+  const emailConfirm = document.getElementById('reg-email-confirm').value.trim().toLowerCase();
+  const username     = document.getElementById('reg-username').value.trim();
+  const password     = document.getElementById('reg-password').value;
+  const confirm      = document.getElementById('reg-confirm').value;
+  const errEl        = document.getElementById('reg-error');
 
   const showErr = (msg) => {
     errEl.textContent = msg;
@@ -3526,6 +3755,7 @@ async function doRegister() {
 
   if (!name)     { showErr('⚠️ Informe seu nome'); return; }
   if (!email || !email.includes('@')) { showErr('⚠️ Informe um e-mail válido'); return; }
+  if (email !== emailConfirm) { showErr('❌ E-mails não coincidem'); return; }
   if (!username) { showErr('⚠️ Informe um nome de usuário'); return; }
   if (/\s/.test(username)) { showErr('⚠️ Usuário não pode ter espaços'); return; }
   if (password.length < 4)  { showErr('⚠️ Senha deve ter no mínimo 4 caracteres'); return; }
